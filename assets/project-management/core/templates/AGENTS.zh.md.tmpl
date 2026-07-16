@@ -1,0 +1,38 @@
+# 项目工作规则
+
+<!-- generated-by: manage-project-context; 合并到现有用户文件前必须审阅 -->
+
+这是 Agent 处理 **{{PROJECT_NAME}}** 时使用的简明工作协议。详细项目上下文与维护规则保存在 `{{MANAGEMENT_DIR}}` 下。
+
+## 必须阅读
+
+1. 阅读本文件。
+2. 阅读 `{{MANAGEMENT_DIR}}\00_START_HERE.en.md`，了解证据优先级与完整任务读取矩阵。
+3. 按矩阵阅读对应英文文档。英文是执行来源，`*.zh.md` 是中文审阅镜像。
+
+## 按任务读取
+
+- 范围或规划：阅读 `01_goal\PROJECT_GOAL.en.md`、`01_goal\PROJECT_CONSTRAINTS.en.md` 与 `03_active_work\CURRENT_TASKS.en.md`。
+- 交付物、当前行为或项目结构修改：另外阅读 `02_current_state\SOURCE_OF_TRUTH.en.md`、`02_current_state\CURRENT_VERSION.en.md` 与 `04_decisions\DECISIONS.en.md` 中相关记录。
+- 新方向或恢复旧工作：阅读 `06_history\PROJECT_HISTORY.en.md`、`07_future\NEXT_DIRECTIONS.en.md` 与相关存档说明。
+- 参考材料或存档证据：使用前在 `08_references\README.en.md` 或 `99_archive\README.en.md` 中确认来源。
+
+本节路径均相对于 `{{MANAGEMENT_DIR}}`。
+
+## 已启用领域模块
+
+{{MODULE_RULES_ZH}}
+
+## 工作规则
+
+- 用户只要求回答问题时不修改文件；用户要求修改后再变更项目内容。
+- 项目当前真实文件、行为与产物是执行证据；管理文档用于解释意图、状态与有效边界。
+- 未知事实保持「待确认」。不能把提案、后续方向或存档材料描述成当前事实。
+- 保留项目已有文件。任何 `*.project-management.proposed*` 文件都需要审阅后才能合并。
+- 任一管理文档变化时，保持英文与中文内容一致。
+
+## 修改后
+
+- 按 `00_START_HERE.en.md` 的变更类型规则更新对应文档。
+- 管理 Markdown 或 manifest 变化后运行 `node "{{MANAGEMENT_DIR}}\tools\build_dashboard.mjs"`。
+- 变更影响 Dashboard 布局或交互时进行页面检查。

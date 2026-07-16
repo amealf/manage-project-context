@@ -1,0 +1,35 @@
+# Backend Requirements
+
+## Scope
+
+This optional module exists because maintained server, API, or service behavior is part of **{{PROJECT_NAME}}**. Record only services that project evidence confirms.
+
+## Service register
+
+| Service or boundary | Responsibility | Entry path | Runtime | Status |
+| --- | --- | --- | --- | --- |
+| Unconfirmed | Inspect current server or API source. | Unconfirmed | Unconfirmed | Needs review |
+
+## Contracts
+
+- Record stable inputs, outputs, error semantics, versioning, and compatibility promises.
+- Identify ownership and trust boundaries.
+- Define idempotency, retries, timeouts, and concurrency behavior only where relevant.
+- Link data contracts to the data module when that module is active.
+- Link identity, permission, secret, or privacy rules to the security module when active.
+
+## Reliability and operations
+
+| Concern | Current rule | Evidence | Failure behavior |
+| --- | --- | --- | --- |
+| Availability | Unconfirmed | Inspect runtime configuration | Unconfirmed |
+| Logging and metrics | Unconfirmed | Inspect observability code/configuration | Unconfirmed |
+| Resource limits | Unconfirmed | Inspect measured behavior | Unconfirmed |
+
+## Validation
+
+Record contract tests, integration tests, failure tests, and operational verification that actually exist. Do not claim reliability targets without evidence.
+
+## Maintenance
+
+Update when a durable server contract, service boundary, runtime assumption, failure policy, performance target, or observability rule changes.

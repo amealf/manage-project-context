@@ -1,0 +1,789 @@
+<!doctype html>
+<!-- generated-by: manage-project-context -->
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project Management</title>
+  <script>
+    try {
+      const savedTheme = localStorage.getItem("project-management-theme");
+      document.documentElement.dataset.theme = savedTheme === "light" ? "light" : "dark";
+    } catch (error) {
+      document.documentElement.dataset.theme = "dark";
+    }
+  </script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --canvas: #151718;
+      --sidebar: #1b1e20;
+      --surface: #212529;
+      --surface-strong: #272c31;
+      --ink: #f4f5f5;
+      --body: #c7cbcf;
+      --muted: #929aa2;
+      --line: #33393f;
+      --line-strong: #48515a;
+      --accent: #68a9e8;
+      --accent-strong: #8bc3f6;
+      --accent-soft: #19334d;
+      --code: #171a1c;
+      --code-ink: #f2b78f;
+      --focus: #9fcef8;
+      --warning: #f2c572;
+      --sidebar-width: 286px;
+      --content-width: 74ch;
+      --toolbar-height: 56px;
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --canvas: #f7f8fa;
+      --sidebar: #eef1f4;
+      --surface: #ffffff;
+      --surface-strong: #e4e9ee;
+      --ink: #18212a;
+      --body: #3f4d5a;
+      --muted: #657382;
+      --line: #d5dce3;
+      --line-strong: #bcc7d1;
+      --accent: #246aa5;
+      --accent-strong: #174f80;
+      --accent-soft: #dcebf7;
+      --code: #edf1f4;
+      --code-ink: #8a4218;
+      --focus: #1f6fae;
+      --warning: #7b5200;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--canvas); scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--canvas);
+      color: var(--body);
+      font-size: 15px;
+      line-height: 1.65;
+      text-rendering: optimizeLegibility;
+    }
+    button, input, select { font: inherit; }
+    button, select { color: inherit; }
+    a { color: var(--accent); text-underline-offset: 3px; }
+    a:hover { color: var(--accent-strong); }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+    ::selection { background: var(--accent-soft); color: var(--ink); }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid var(--line);
+      background: var(--sidebar);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      width: 100%;
+      min-height: 72px;
+      padding: 14px 16px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+    }
+    .brand:hover { background: var(--surface); }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: var(--surface);
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 760;
+      letter-spacing: 0.02em;
+    }
+    .brand-copy { min-width: 0; }
+    .brand-title {
+      display: block;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .brand-subtitle { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
+
+    .search-region { padding: 14px 12px 10px; }
+    .search-wrap { position: relative; }
+    .search-icon {
+      position: absolute;
+      top: 50%;
+      left: 11px;
+      width: 14px;
+      height: 14px;
+      border: 1.5px solid var(--muted);
+      border-radius: 50%;
+      transform: translateY(-56%);
+      pointer-events: none;
+    }
+    .search-icon::after {
+      content: "";
+      position: absolute;
+      right: -5px;
+      bottom: -3px;
+      width: 6px;
+      height: 1.5px;
+      background: var(--muted);
+      transform: rotate(45deg);
+    }
+    #search {
+      width: 100%;
+      height: 38px;
+      padding: 0 38px 0 34px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: var(--surface);
+      color: var(--ink);
+    }
+    #search::placeholder { color: var(--muted); opacity: 1; }
+    .search-shortcut {
+      position: absolute;
+      top: 50%;
+      right: 9px;
+      min-width: 20px;
+      padding: 0 5px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 20px;
+      text-align: center;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .mobile-document-select { display: none; padding: 0 12px 12px; }
+    #document-select {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: var(--surface);
+      padding: 0 9px;
+    }
+    .sidebar-navigation { padding: 4px 8px 28px; }
+    .nav-group + .nav-group { margin-top: 18px; }
+    .nav-group-title {
+      margin: 0 9px 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.4;
+    }
+    .nav-list { display: grid; gap: 2px; }
+    .nav-item {
+      display: grid;
+      grid-template-columns: 4px minmax(0, 1fr);
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      min-height: 34px;
+      padding: 5px 9px 5px 6px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--body);
+      font-size: 13px;
+      line-height: 1.45;
+      text-align: left;
+      cursor: pointer;
+    }
+    .nav-item:hover { background: var(--surface); color: var(--ink); }
+    .nav-item.active { background: var(--accent-soft); color: var(--accent-strong); font-weight: 680; }
+    .nav-marker { width: 3px; height: 18px; border-radius: 2px; background: transparent; }
+    .nav-item.active .nav-marker { background: var(--accent); }
+    .nav-label { min-width: 0; overflow-wrap: anywhere; }
+    .nav-empty { display: none; margin: 18px 10px; color: var(--muted); font-size: 13px; }
+
+    .content-column { min-width: 0; }
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      min-height: var(--toolbar-height);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 9px 24px;
+      border-bottom: 1px solid var(--line);
+      background: var(--canvas);
+    }
+    .control-group { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+    .control-button {
+      min-height: 30px;
+      padding: 3px 10px;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    .control-button:hover { color: var(--ink); }
+    .control-button.active { background: var(--surface-strong); color: var(--ink); }
+
+    .main { min-width: 0; padding: 54px 72px 90px; }
+    .document-shell { width: min(100%, var(--content-width)); margin: 0 auto; }
+    .document-header { margin-bottom: 42px; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+    .document-group { margin: 0 0 10px; color: var(--accent-strong); font-size: 12px; font-weight: 700; }
+    .document-title {
+      margin: 0;
+      color: var(--ink);
+      font-size: 34px;
+      font-weight: 750;
+      line-height: 1.18;
+      letter-spacing: -0.025em;
+      text-wrap: balance;
+      overflow-wrap: anywhere;
+    }
+    .document-lead { max-width: 65ch; margin: 12px 0 0; color: var(--body); font-size: 16px; line-height: 1.55; text-wrap: pretty; }
+    .document-meta {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(180px, 0.58fr);
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .meta-label { display: block; margin-bottom: 3px; color: var(--muted); font-size: 11px; font-weight: 700; }
+    .meta-value { display: block; color: var(--body); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+    .missing-note { display: none; margin-top: 16px; padding: 10px 12px; border: 1px solid var(--warning); border-radius: 7px; color: var(--warning); font-size: 13px; }
+    .missing-note.visible { display: block; }
+
+    .markdown-body { color: var(--body); font-size: 16px; line-height: 1.68; overflow-wrap: anywhere; }
+    .markdown-body > h1:first-child { display: none; }
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3,
+    .markdown-body h4 { color: var(--ink); scroll-margin-top: calc(var(--toolbar-height) + 22px); text-wrap: balance; }
+    .markdown-body h2 { margin: 2.15em 0 0.7em; font-size: 25px; line-height: 1.3; letter-spacing: -0.018em; }
+    .markdown-body h3 { margin: 1.85em 0 0.55em; font-size: 19px; line-height: 1.35; }
+    .markdown-body h4 { margin: 1.55em 0 0.45em; font-size: 16px; line-height: 1.4; }
+    .markdown-body p { margin: 0.72em 0; text-wrap: pretty; }
+    .markdown-body strong { color: var(--ink); font-weight: 760; }
+    .markdown-body ul, .markdown-body ol { padding-left: 1.45em; }
+    .markdown-body li + li { margin-top: 0.28em; }
+    .markdown-body blockquote { margin: 1.25em 0; padding: 11px 14px; border: 1px solid var(--line-strong); border-radius: 7px; background: var(--surface); }
+    .markdown-body code { padding: 0.12em 0.34em; border-radius: 4px; background: var(--code); color: var(--code-ink); font-family: "Cascadia Code", Consolas, monospace; font-size: 0.88em; }
+    .markdown-body :not(pre) > code { overflow-wrap: anywhere; word-break: break-word; }
+    .markdown-body pre { overflow: auto; margin: 1.25em 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: 7px; background: var(--code); }
+    .markdown-body pre code { padding: 0; background: transparent; color: var(--ink); }
+    .markdown-body table { display: block; width: 100%; overflow-x: auto; margin: 1.35em 0; border-collapse: collapse; font-size: 13px; line-height: 1.5; }
+    .markdown-body th, .markdown-body td { min-width: 130px; padding: 9px 11px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .markdown-body th { background: var(--surface-strong); color: var(--ink); font-weight: 700; }
+    .markdown-body tbody tr:nth-child(even) { background: var(--surface); }
+    .markdown-body img { display: block; max-width: 100%; height: auto; margin: 1.4em auto; border: 1px solid var(--line); border-radius: 7px; }
+    .markdown-body hr { margin: 2em 0; border: 0; border-top: 1px solid var(--line); }
+    .document-footer { margin-top: 50px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+
+    .outline {
+      position: fixed;
+      top: 50%;
+      right: 18px;
+      z-index: 30;
+      transform: translateY(-50%);
+    }
+    .outline-trigger {
+      min-width: 46px;
+      min-height: 36px;
+      padding: 5px 9px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: var(--surface);
+      color: var(--body);
+      font-size: 12px;
+      font-weight: 680;
+      cursor: pointer;
+    }
+    .outline-trigger:hover { color: var(--ink); }
+    .outline-panel {
+      position: absolute;
+      top: 50%;
+      right: 54px;
+      width: min(250px, calc(100vw - 88px));
+      max-height: min(520px, calc(100vh - 64px));
+      overflow: auto;
+      padding: 10px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: var(--surface);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-50%) translateX(4px);
+      transition: opacity 160ms ease-out, transform 160ms ease-out;
+    }
+    .outline:hover .outline-panel,
+    .outline:focus-within .outline-panel,
+    .outline.open .outline-panel { opacity: 1; pointer-events: auto; transform: translateY(-50%) translateX(0); }
+    .outline-list { display: grid; gap: 2px; }
+    .outline-link { display: block; padding: 6px 7px; border-radius: 5px; color: var(--muted); font-size: 12px; line-height: 1.45; text-decoration: none; overflow-wrap: anywhere; }
+    .outline-link.level-3 { margin-left: 10px; }
+    .outline-link.level-4 { margin-left: 20px; }
+    .outline-link:hover, .outline-link.active { background: var(--accent-soft); color: var(--accent-strong); }
+    .outline-empty { margin: 4px 6px; color: var(--muted); font-size: 12px; }
+
+    @media (max-width: 1080px) {
+      .main { padding-right: 64px; padding-left: 48px; }
+      .document-title { font-size: 30px; }
+    }
+    @media (max-width: 760px) {
+      .app-shell { display: block; }
+      .sidebar { position: static; width: 100%; height: auto; overflow: visible; border-right: 0; border-bottom: 1px solid var(--line); }
+      .brand { min-height: 64px; }
+      .sidebar-navigation { display: none; }
+      .mobile-document-select { display: block; }
+      .toolbar { position: static; justify-content: space-between; padding: 9px 14px; }
+      .main { padding: 32px 18px 72px; }
+      .document-header { margin-bottom: 32px; }
+      .document-title { font-size: 28px; }
+      .document-meta { grid-template-columns: 1fr; gap: 14px; }
+      .markdown-body { font-size: 15px; }
+      .markdown-body table { width: calc(100vw - 36px); }
+      .outline { top: auto; right: 14px; bottom: 14px; transform: none; }
+      .outline-panel { top: auto; right: 0; bottom: 44px; max-height: min(58vh, 420px); transform: translateY(4px); }
+      .outline:hover .outline-panel,
+      .outline:focus-within .outline-panel,
+      .outline.open .outline-panel { transform: translateY(0); }
+    }
+    @media (max-width: 430px) {
+      .toolbar { align-items: stretch; flex-direction: column; }
+      .control-group { display: grid; grid-template-columns: 1fr 1fr; }
+      .document-title { font-size: 26px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .outline-panel { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Project documents">
+      <button type="button" class="brand" id="home-button">
+        <span class="brand-mark" aria-hidden="true">PM</span>
+        <span class="brand-copy">
+          <span class="brand-title" id="project-name"></span>
+          <span class="brand-subtitle" id="project-subtitle">项目管理文档</span>
+        </span>
+      </button>
+      <div class="search-region">
+        <label class="search-wrap">
+          <span class="sr-only" id="search-label">搜索文档</span>
+          <span class="search-icon" aria-hidden="true"></span>
+          <input id="search" type="search" autocomplete="off" placeholder="搜索文档" aria-labelledby="search-label">
+          <span class="search-shortcut" aria-hidden="true">/</span>
+        </label>
+      </div>
+      <div class="mobile-document-select">
+        <label class="sr-only" for="document-select" id="document-select-label">选择文档</label>
+        <select id="document-select" aria-labelledby="document-select-label"></select>
+      </div>
+      <nav class="sidebar-navigation" aria-label="Project documents">
+        <div id="document-navigation"></div>
+        <p class="nav-empty" id="nav-empty">没有匹配的文档。</p>
+      </nav>
+    </aside>
+
+    <section class="content-column">
+      <header class="toolbar">
+        <div class="control-group" role="group" aria-label="Language">
+          <button type="button" class="control-button" data-language="zh">中文</button>
+          <button type="button" class="control-button" data-language="en">EN</button>
+        </div>
+        <div class="control-group" role="group" aria-label="Theme">
+          <button type="button" class="control-button" data-theme-value="dark">深色</button>
+          <button type="button" class="control-button" data-theme-value="light">浅色</button>
+        </div>
+      </header>
+
+      <main class="main">
+        <div class="document-shell">
+          <header class="document-header">
+            <p class="document-group" id="document-group"></p>
+            <h1 class="document-title" id="document-title"></h1>
+            <p class="document-lead" id="document-lead"></p>
+            <div class="document-meta">
+              <div>
+                <strong class="meta-label" id="policy-label">更新条件</strong>
+                <span class="meta-value" id="document-policy"></span>
+              </div>
+              <div>
+                <strong class="meta-label" id="path-label">文件路径</strong>
+                <span class="meta-value" id="document-path"></span>
+              </div>
+            </div>
+            <p class="missing-note" id="missing-note">该文档缺失；请检查初始化报告或冲突提案。</p>
+          </header>
+          <article class="markdown-body" id="markdown-content"></article>
+          <footer class="document-footer" id="document-updated"></footer>
+        </div>
+      </main>
+    </section>
+
+    <aside class="outline" id="outline" aria-label="Document outline">
+      <button type="button" class="outline-trigger" id="outline-trigger" aria-expanded="false">目录</button>
+      <div class="outline-panel" id="outline-panel">
+        <nav class="outline-list" id="outline-list" aria-label="In-page headings"></nav>
+      </div>
+    </aside>
+  </div>
+
+  <script src="assets/marked.umd.js"></script>
+  <script>
+    const PROJECT_NAME = __PROJECT_NAME_JSON__;
+    const MANIFEST = __MANIFEST_JSON__;
+    const DOCUMENTS = __DOCUMENTS_JSON__;
+    const COPY = {
+      zh: {
+        subtitle: "项目管理文档",
+        search: "搜索文档",
+        searchLabel: "搜索文档",
+        selectLabel: "选择文档",
+        empty: "没有匹配的文档。",
+        policy: "更新条件",
+        path: "文件路径",
+        updated: "更新时间",
+        missing: "该文档缺失；请检查初始化报告或冲突提案。",
+        outline: "目录",
+        outlineEmpty: "本页没有分节标题。",
+        themeDark: "深色",
+        themeLight: "浅色",
+      },
+      en: {
+        subtitle: "Project management documents",
+        search: "Search documents",
+        searchLabel: "Search documents",
+        selectLabel: "Select document",
+        empty: "No matching documents.",
+        policy: "Update condition",
+        path: "File path",
+        updated: "Updated",
+        missing: "This document is missing; review the initialization report or conflict proposals.",
+        outline: "Outline",
+        outlineEmpty: "This page has no section headings.",
+        themeDark: "Dark",
+        themeLight: "Light",
+      },
+    };
+
+    const state = {
+      language: "zh",
+      pair: "agent-rules",
+      query: "",
+      theme: document.documentElement.dataset.theme === "light" ? "light" : "dark",
+    };
+    const byId = new Map(DOCUMENTS.map((document) => [document.id, document]));
+    const content = document.getElementById("markdown-content");
+    const navigation = document.getElementById("document-navigation");
+    const documentSelect = document.getElementById("document-select");
+    const search = document.getElementById("search");
+    const outline = document.getElementById("outline");
+    const outlineTrigger = document.getElementById("outline-trigger");
+    let outlineEntries = [];
+    let outlineFrame = 0;
+
+    marked.setOptions({ gfm: true, breaks: false });
+
+    function currentDocument() {
+      return byId.get(`${state.pair}.${state.language}`)
+        || DOCUMENTS.find((document) => document.lang === state.language)
+        || DOCUMENTS[0];
+    }
+
+    function localizedDocuments() {
+      return DOCUMENTS.filter((document) => document.lang === state.language);
+    }
+
+    function groupLabel(group) {
+      const labels = MANIFEST.groups[group] || {};
+      return labels[state.language] || labels.en || group;
+    }
+
+    function writeHash(replace = false) {
+      const nextHash = `#${state.pair}.${state.language}`;
+      if (location.hash === nextHash) return;
+      if (replace) history.replaceState(null, "", nextHash);
+      else history.pushState(null, "", nextHash);
+    }
+
+    function slug(text, index) {
+      const value = text.toLocaleLowerCase().trim().replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "");
+      return value || `section-${index}`;
+    }
+
+    function scheduleOutlineUpdate() {
+      if (outlineFrame) return;
+      outlineFrame = requestAnimationFrame(updateOutlineState);
+    }
+
+    function updateOutlineState() {
+      outlineFrame = 0;
+      if (!outlineEntries.length) return;
+      const marker = 105;
+      let activeIndex = 0;
+      outlineEntries.forEach((entry, index) => {
+        if (entry.heading.getBoundingClientRect().top <= marker) activeIndex = index;
+      });
+      outlineEntries.forEach((entry, index) => entry.link.classList.toggle("active", index === activeIndex));
+    }
+
+    function renderOutline() {
+      const outlineList = document.getElementById("outline-list");
+      outlineList.replaceChildren();
+      outlineEntries = [];
+      const headings = Array.from(content.querySelectorAll("h2, h3, h4"));
+      if (!headings.length) {
+        const empty = document.createElement("p");
+        empty.className = "outline-empty";
+        empty.textContent = COPY[state.language].outlineEmpty;
+        outlineList.append(empty);
+        return;
+      }
+      headings.forEach((heading, index) => {
+        heading.id = slug(heading.textContent, index);
+        const link = document.createElement("a");
+        link.className = `outline-link level-${heading.tagName.slice(1)}`;
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent;
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          heading.scrollIntoView({ block: "start" });
+          outline.classList.remove("open");
+          outlineTrigger.setAttribute("aria-expanded", "false");
+        });
+        outlineList.append(link);
+        outlineEntries.push({ heading, link });
+      });
+      scheduleOutlineUpdate();
+    }
+
+    function renderNavigation() {
+      const copy = COPY[state.language];
+      const query = state.query.trim().toLocaleLowerCase();
+      navigation.replaceChildren();
+      documentSelect.replaceChildren();
+      let matches = 0;
+
+      Object.keys(MANIFEST.groups).forEach((group) => {
+        const documents = localizedDocuments().filter((document) => document.group === group);
+        if (!documents.length) return;
+        const section = document.createElement("section");
+        section.className = "nav-group";
+        const heading = document.createElement("h2");
+        heading.className = "nav-group-title";
+        heading.textContent = groupLabel(group);
+        const list = document.createElement("div");
+        list.className = "nav-list";
+
+        documents.forEach((documentItem) => {
+          const haystack = `${documentItem.title} ${documentItem.path} ${documentItem.markdown}`.toLocaleLowerCase();
+          const visible = !query || haystack.includes(query);
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `nav-item${documentItem.pair === state.pair ? " active" : ""}`;
+          button.hidden = !visible;
+          const marker = document.createElement("span");
+          marker.className = "nav-marker";
+          marker.setAttribute("aria-hidden", "true");
+          const label = document.createElement("span");
+          label.className = "nav-label";
+          label.textContent = documentItem.title;
+          button.append(marker, label);
+          button.addEventListener("click", () => selectPair(documentItem.pair));
+          list.append(button);
+
+          const option = document.createElement("option");
+          option.value = documentItem.pair;
+          option.textContent = `${groupLabel(group)} · ${documentItem.title}`;
+          option.selected = documentItem.pair === state.pair;
+          option.hidden = !visible;
+          documentSelect.append(option);
+          if (visible) matches += 1;
+        });
+        section.append(heading, list);
+        navigation.append(section);
+      });
+      const empty = document.getElementById("nav-empty");
+      empty.textContent = copy.empty;
+      empty.style.display = matches ? "none" : "block";
+    }
+
+    function renderControls() {
+      document.querySelectorAll("[data-language]").forEach((button) => {
+        const active = button.dataset.language === state.language;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      document.querySelectorAll("[data-theme-value]").forEach((button) => {
+        const active = button.dataset.themeValue === state.theme;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+    }
+
+    function sanitizeRenderedContent() {
+      content.querySelectorAll("script, iframe, object, embed, link, style").forEach((element) => element.remove());
+      content.querySelectorAll("*").forEach((element) => {
+        Array.from(element.attributes).forEach((attribute) => {
+          if (/^on/i.test(attribute.name)) element.removeAttribute(attribute.name);
+        });
+        ["href", "src"].forEach((attributeName) => {
+          const value = element.getAttribute(attributeName);
+          if (value && /^\s*javascript:/i.test(value)) element.removeAttribute(attributeName);
+        });
+      });
+    }
+
+    function renderDocument() {
+      const documentItem = currentDocument();
+      if (!documentItem) return;
+      state.pair = documentItem.pair;
+      const copy = COPY[state.language];
+      document.documentElement.lang = state.language === "zh" ? "zh-CN" : "en";
+      document.getElementById("project-name").textContent = PROJECT_NAME;
+      document.getElementById("project-subtitle").textContent = copy.subtitle;
+      document.getElementById("home-button").setAttribute("aria-label", state.language === "zh" ? "返回 Agent 工作规则" : "Return to agent instructions");
+      search.placeholder = copy.search;
+      document.getElementById("search-label").textContent = copy.searchLabel;
+      document.getElementById("document-select-label").textContent = copy.selectLabel;
+      document.querySelector('[data-theme-value="dark"]').textContent = copy.themeDark;
+      document.querySelector('[data-theme-value="light"]').textContent = copy.themeLight;
+      document.getElementById("document-group").textContent = groupLabel(documentItem.group);
+      document.getElementById("document-title").textContent = documentItem.title;
+      document.getElementById("document-lead").textContent = documentItem.lead || "";
+      document.getElementById("policy-label").textContent = copy.policy;
+      document.getElementById("document-policy").textContent = documentItem.policy || "";
+      document.getElementById("path-label").textContent = copy.path;
+      document.getElementById("document-path").textContent = documentItem.path;
+      const missing = document.getElementById("missing-note");
+      missing.textContent = copy.missing;
+      missing.classList.toggle("visible", Boolean(documentItem.missing));
+      document.getElementById("document-updated").textContent = documentItem.modified
+        ? `${copy.updated} ${new Date(documentItem.modified).toLocaleString(state.language === "zh" ? "zh-CN" : "en-GB", { dateStyle: "medium", timeStyle: "short" })}`
+        : "";
+
+      content.innerHTML = marked.parse(documentItem.markdown);
+      sanitizeRenderedContent();
+      const documentDirectory = documentItem.path.replace(/[^/]+$/, "");
+      content.querySelectorAll("img[src]").forEach((image) => {
+        const source = image.getAttribute("src");
+        if (source && !/^(?:[a-z]+:|\/|#)/i.test(source)) image.setAttribute("src", `${documentDirectory}${source}`);
+      });
+      content.querySelectorAll("a[href]").forEach((link) => {
+        if (/^https?:/i.test(link.href)) {
+          link.target = "_blank";
+          link.rel = "noreferrer";
+        }
+      });
+      renderNavigation();
+      renderOutline();
+      renderControls();
+      outlineTrigger.textContent = copy.outline;
+      document.title = `${documentItem.title} · ${PROJECT_NAME}`;
+    }
+
+    function selectPair(pair, replace = false) {
+      if (!byId.has(`${pair}.${state.language}`)) return;
+      state.pair = pair;
+      writeHash(replace);
+      renderDocument();
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+
+    function selectLanguage(language) {
+      state.language = language === "en" ? "en" : "zh";
+      if (!byId.has(`${state.pair}.${state.language}`)) state.pair = "agent-rules";
+      writeHash(false);
+      renderDocument();
+    }
+
+    function selectTheme(theme) {
+      state.theme = theme === "light" ? "light" : "dark";
+      document.documentElement.dataset.theme = state.theme;
+      try { localStorage.setItem("project-management-theme", state.theme); } catch (error) { /* storage is optional */ }
+      renderControls();
+    }
+
+    function readHash() {
+      const match = location.hash.match(/^#([a-z0-9-]+)\.(en|zh)$/i);
+      if (!match || !byId.has(`${match[1]}.${match[2]}`)) return false;
+      state.pair = match[1];
+      state.language = match[2];
+      return true;
+    }
+
+    document.querySelectorAll("[data-language]").forEach((button) => button.addEventListener("click", () => selectLanguage(button.dataset.language)));
+    document.querySelectorAll("[data-theme-value]").forEach((button) => button.addEventListener("click", () => selectTheme(button.dataset.themeValue)));
+    document.getElementById("home-button").addEventListener("click", () => selectPair("agent-rules"));
+    documentSelect.addEventListener("change", () => selectPair(documentSelect.value));
+    search.addEventListener("input", () => { state.query = search.value; renderNavigation(); });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "/" && document.activeElement !== search) {
+        event.preventDefault();
+        search.focus();
+      }
+      if (event.key === "Escape" && document.activeElement === search) {
+        search.value = "";
+        state.query = "";
+        search.blur();
+        renderNavigation();
+      }
+    });
+    outlineTrigger.addEventListener("click", () => {
+      const open = outline.classList.toggle("open");
+      outlineTrigger.setAttribute("aria-expanded", String(open));
+    });
+    document.addEventListener("pointerdown", (event) => {
+      if (!outline.contains(event.target)) {
+        outline.classList.remove("open");
+        outlineTrigger.setAttribute("aria-expanded", "false");
+      }
+    });
+    window.addEventListener("scroll", scheduleOutlineUpdate, { passive: true });
+    window.addEventListener("hashchange", () => { if (readHash()) renderDocument(); });
+
+    readHash();
+    writeHash(true);
+    renderDocument();
+  </script>
+</body>
+</html>

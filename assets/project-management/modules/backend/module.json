@@ -1,0 +1,24 @@
+{
+  "documents": [
+    {
+      "id": "backend.en",
+      "pair": "backend",
+      "group": "domain",
+      "path": "05_domains/backend/BACKEND_REQUIREMENTS.en.md",
+      "lang": "en",
+      "title": "Backend Requirements",
+      "lead": "Durable server, API, service-boundary, runtime, and observability rules.",
+      "policy": "Update when a durable server contract, service boundary, runtime, failure, or observability rule changes."
+    },
+    {
+      "id": "backend.zh",
+      "pair": "backend",
+      "group": "domain",
+      "path": "05_domains/backend/BACKEND_REQUIREMENTS.zh.md",
+      "lang": "zh",
+      "title": "后端要求",
+      "lead": "长期服务端、API、服务边界、运行与可观测规则。",
+      "policy": "长期服务契约、边界、运行、失败处理或可观测规则变化后更新。"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "documents": [
+    {
+      "id": "data.en",
+      "pair": "data",
+      "group": "domain",
+      "path": "05_domains/data/DATA_REQUIREMENTS.en.md",
+      "lang": "en",
+      "title": "Data Requirements",
+      "lead": "Data sources, contracts, quality, lineage, access, retention, and recovery rules.",
+      "policy": "Update when a durable source, schema, quality, lineage, access, retention, or recovery rule changes."
+    },
+    {
+      "id": "data.zh",
+      "pair": "data",
+      "group": "domain",
+      "path": "05_domains/data/DATA_REQUIREMENTS.zh.md",
+      "lang": "zh",
+      "title": "数据要求",
+      "lead": "数据来源、契约、质量、血缘、访问、保留与恢复规则。",
+      "policy": "长期来源、结构、质量、血缘、访问、保留或恢复规则变化后更新。"
+    }
+  ]
+}

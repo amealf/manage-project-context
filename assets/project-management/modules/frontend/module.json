@@ -1,0 +1,24 @@
+{
+  "documents": [
+    {
+      "id": "frontend.en",
+      "pair": "frontend",
+      "group": "domain",
+      "path": "05_domains/frontend/FRONTEND_REQUIREMENTS.en.md",
+      "lang": "en",
+      "title": "Frontend Requirements",
+      "lead": "Durable requirements for maintained user-facing interfaces.",
+      "policy": "Update when a durable interface, interaction, accessibility, responsive, visual, or performance rule changes."
+    },
+    {
+      "id": "frontend.zh",
+      "pair": "frontend",
+      "group": "domain",
+      "path": "05_domains/frontend/FRONTEND_REQUIREMENTS.zh.md",
+      "lang": "zh",
+      "title": "前端设计要求",
+      "lead": "项目维护的用户界面长期要求。",
+      "policy": "长期界面、交互、无障碍、响应式、视觉或性能规则变化后更新。"
+    }
+  ]
+}

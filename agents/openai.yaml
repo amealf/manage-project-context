@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Context / 项目管理目录"
+  short_description: "Bilingual project context / 双语项目管理目录"
+  default_prompt: "Use $manage-project-context to create or initialize a bilingual project-management folder with only the domain modules this project actually needs. / 使用 $manage-project-context 创建或初始化双语项目管理目录，仅加入这个项目实际需要的领域模块。"

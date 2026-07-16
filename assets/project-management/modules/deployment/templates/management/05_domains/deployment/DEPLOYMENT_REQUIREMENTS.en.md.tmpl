@@ -1,0 +1,29 @@
+# Deployment Requirements
+
+## Scope
+
+This optional module exists because deployment or release operation is part of **{{PROJECT_NAME}}**. Do not treat example or dormant infrastructure files as active environments without confirmation.
+
+## Environment register
+
+| Environment | Purpose | Configuration source | Release path | Status |
+| --- | --- | --- | --- | --- |
+| Unconfirmed | Inspect active infrastructure and release evidence. | Unconfirmed | Unconfirmed | Needs review |
+
+## Release contract
+
+- Record build inputs, artifacts, promotion steps, approvals, and environment differences.
+- Identify configuration and secret sources without storing secret values.
+- Define health checks, migration order, rollback conditions, and recovery steps where applicable.
+- Record observability and ownership needed to judge a release.
+- Link each active environment to current authoritative configuration.
+
+## Verification
+
+| Stage | Required check | Failure action | Evidence |
+| --- | --- | --- | --- |
+| Unconfirmed | Confirm from the active release process. | Unconfirmed | Unconfirmed |
+
+## Maintenance
+
+Update when a durable environment, build artifact, release process, approval, configuration source, migration, rollback, recovery, infrastructure, or operational rule changes.

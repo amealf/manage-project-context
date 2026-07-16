@@ -1,0 +1,24 @@
+{
+  "documents": [
+    {
+      "id": "deployment.en",
+      "pair": "deployment",
+      "group": "domain",
+      "path": "05_domains/deployment/DEPLOYMENT_REQUIREMENTS.en.md",
+      "lang": "en",
+      "title": "Deployment Requirements",
+      "lead": "Environment, release, configuration, rollback, infrastructure, and operational rules.",
+      "policy": "Update when a durable environment, release, rollback, infrastructure, or operational rule changes."
+    },
+    {
+      "id": "deployment.zh",
+      "pair": "deployment",
+      "group": "domain",
+      "path": "05_domains/deployment/DEPLOYMENT_REQUIREMENTS.zh.md",
+      "lang": "zh",
+      "title": "部署要求",
+      "lead": "环境、发布、配置、回滚、基础设施与运行规则。",
+      "policy": "长期环境、发布、回滚、基础设施或运行规则变化后更新。"
+    }
+  ]
+}

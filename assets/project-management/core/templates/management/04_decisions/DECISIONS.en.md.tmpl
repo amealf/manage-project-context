@@ -1,0 +1,18 @@
+# Decisions
+
+## Decision register
+
+| Date | Status | Decision | Rationale | Revisit when |
+| --- | --- | --- | --- | --- |
+| {{DATE}} | Current | Use English management documents as the operational source and Chinese files as review mirrors. | This gives agents one execution source while preserving bilingual human review. | The project owner changes the language policy. |
+| {{DATE}} | Current | Keep root agent rules concise and place detailed context under `{{MANAGEMENT_DIR}}`. | High-priority instructions stay readable while detail remains discoverable. | The workspace instruction mechanism changes. |
+| {{DATE}} | Current | Protect differing existing files with reviewable proposal siblings. | Existing project content must not be replaced during initialization. | The user approves a specific merge policy change. |
+| {{DATE}} | Current | Add domain documents only for confirmed project domains. | An empty category can mislead future work and waste context. | The project adopts a new domain. |
+
+## Adding a decision
+
+Record only durable choices that affect future work. Include the decision, evidence or rationale, status, date, and a condition for review. Put temporary parameters and task state in `03_active_work\CURRENT_TASKS.en.md`.
+
+## Status vocabulary
+
+Use `proposed`, `current`, `retired`, or `reversed`. A proposed item is not an operating rule.

@@ -1,0 +1,97 @@
+# Project Management Entry
+
+## Purpose
+
+This folder is the shared working memory for **{{PROJECT_NAME}}**. It records current intent, constraints, valid files, version state, active work, decisions, history, future directions, references, and archive boundaries. It does not duplicate large project files or raw source material.
+
+The folder was initialized for a **{{MODE_EN}}** on {{DATE}}.
+
+## Current orientation
+
+- **Durable goal:** {{GOAL_EN}}
+- **Optional domain modules:** {{MODULES_EN}}
+- **Operational language:** English.
+- **Review mirror:** Chinese.
+- **Unknown facts:** remain unconfirmed until supported by the user or project evidence.
+
+The management dashboard is an offline document reader. Its use of HTML does not imply that this project contains or needs a frontend.
+
+## Evidence priority
+
+Use the highest applicable source:
+
+1. Current user instruction and accepted decisions.
+2. Current real project artifacts and behavior, including configuration, tests, or commands only when they exist.
+3. Current English project-management documents.
+4. Chinese review mirrors.
+5. Historical, proposed, future, and archived material.
+
+When sources disagree, record the discrepancy. Do not silently choose the more convenient source.
+
+## Default reading order
+
+Read before project changes:
+
+1. `..\AGENTS.md`
+2. `00_START_HERE.en.md`
+3. `01_goal\PROJECT_GOAL.en.md`
+4. `01_goal\PROJECT_CONSTRAINTS.en.md`
+5. `02_current_state\SOURCE_OF_TRUTH.en.md`
+6. `02_current_state\CURRENT_VERSION.en.md`
+7. `03_active_work\CURRENT_TASKS.en.md`
+
+Load other documents only when the task requires them.
+
+## Task selection matrix
+
+| Task | Additional documents |
+| --- | --- |
+| Explain or answer | Only the files needed for the answer; do not mutate project state unless requested. |
+| Change scope or plan | Goal, constraints, and current tasks. |
+| Change a deliverable, current behavior, or project structure | Goal, constraints, source of truth, current version, current tasks, and relevant decisions. |
+| Change a confirmed domain | The matching active module listed below, plus current state and decisions. |
+| Propose a direction | Decisions, project history, and next directions. |
+| Reuse a reference | Reference index and its source file. |
+| Reopen inactive work | Archive guide and the archived item's note. |
+
+### Active domain reading rules
+
+{{MODULE_RULES_EN}}
+
+## Document maintenance triggers
+
+| Document | Update trigger |
+| --- | --- |
+| `PROJECT_GOAL` | The user changes the durable objective or accepted success criteria. |
+| `PROJECT_CONSTRAINTS` | A durable cross-project constraint is accepted, changed, or retired. |
+| `SOURCE_OF_TRUTH` | An authoritative path, entry point, branch, configuration, or artifact changes. |
+| `CURRENT_VERSION` | A deliverable, current behavior, project structure, interface, dependency, or operating procedure changes. |
+| `CURRENT_TASKS` | A task is declared, completed, blocked, resumed, or changes scope. |
+| `DECISIONS` | A durable choice is accepted, retired, or reversed. |
+| `PROJECT_HISTORY` | An event changes how past or current work should be understood. |
+| `NEXT_DIRECTIONS` | A plausible direction appears, changes, becomes active, or is retired. |
+| `08_references\README` | A retained source or its provenance, relevance, or review status changes. |
+| `99_archive\README` | Material becomes inactive, archive policy changes, or an item is restored. |
+| Active domain document | A durable rule in that confirmed domain changes. |
+| Root agent files and this entry | The reading order or maintenance protocol changes. |
+
+Update the English source and Chinese mirror together. Regenerate `index.html` with:
+
+```powershell
+node "{{MANAGEMENT_DIR}}\tools\build_dashboard.mjs"
+```
+
+## Initialization inventory
+
+The initializer detected these pre-existing files, limited to a small orientation sample:
+
+{{DETECTED_FILES_EN}}
+
+Detection is not authority. Confirm current entry points and artifacts in `02_current_state\SOURCE_OF_TRUTH.en.md`.
+
+## Review style
+
+- Keep documents concise and factual.
+- Separate current, retired, proposed, and unknown states.
+- Link to real paths instead of copying large outputs.
+- Record why a fact is believed and when it stops being valid.

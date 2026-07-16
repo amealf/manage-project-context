@@ -1,0 +1,24 @@
+{
+  "documents": [
+    {
+      "id": "research.en",
+      "pair": "research",
+      "group": "domain",
+      "path": "05_domains/research/RESEARCH_CONSTRAINTS.en.md",
+      "lang": "en",
+      "title": "Research Constraints",
+      "lead": "Research questions, methods, evidence boundaries, reproducibility, and interpretation rules.",
+      "policy": "Update when an accepted method, evidence boundary, reproducibility rule, or interpretation constraint changes."
+    },
+    {
+      "id": "research.zh",
+      "pair": "research",
+      "group": "domain",
+      "path": "05_domains/research/RESEARCH_CONSTRAINTS.zh.md",
+      "lang": "zh",
+      "title": "研究约束",
+      "lead": "研究问题、方法、证据边界、可复现与解释规则。",
+      "policy": "已确认方法、证据边界、可复现规则或解释约束变化后更新。"
+    }
+  ]
+}

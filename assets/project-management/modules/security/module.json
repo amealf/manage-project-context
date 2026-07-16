@@ -1,0 +1,24 @@
+{
+  "documents": [
+    {
+      "id": "security.en",
+      "pair": "security",
+      "group": "domain",
+      "path": "05_domains/security/SECURITY_REQUIREMENTS.en.md",
+      "lang": "en",
+      "title": "Security Requirements",
+      "lead": "Identity, authorization, secrets, privacy, threats, compliance, and incident rules.",
+      "policy": "Update when a durable identity, permission, secret, privacy, threat, compliance, or incident rule changes."
+    },
+    {
+      "id": "security.zh",
+      "pair": "security",
+      "group": "domain",
+      "path": "05_domains/security/SECURITY_REQUIREMENTS.zh.md",
+      "lang": "zh",
+      "title": "安全要求",
+      "lead": "身份、授权、密钥、隐私、威胁、合规与事件规则。",
+      "policy": "长期身份、权限、密钥、隐私、威胁、合规或事件规则变化后更新。"
+    }
+  ]
+}
