@@ -3,11 +3,12 @@
 ## Contents
 
 1. Operating examples
-2. Inspection and mode selection
-3. Optional module evidence
-4. Reading rules
-5. Maintenance triggers
-6. Initialization and review
+2. Conversation intake
+3. Inspection and mode selection
+4. Optional module evidence
+5. Reading rules
+6. Chat-driven maintenance
+7. Initialization and review
 
 ## Operating examples
 
@@ -15,6 +16,13 @@
 - New project: "Create an empty project and initialize its management records."
 - Later expansion: "This project now has a web interface; add frontend requirements to its management folder."
 - Maintenance: "Record the accepted decision, close the current task, and refresh the dashboard."
+- Conversation continuation: "We agreed to keep the project offline and the current task is now blocked; update the project memory as part of this work."
+
+## Conversation intake
+
+Read [conversation-protocol.md](conversation-protocol.md) before initialization or maintenance. Review the messages and delegated context available in the current task, then form an internal intake ledger of confirmed goals, constraints, decisions, tasks, current state, domains, corrections, and unknowns.
+
+Use the latest explicit user correction. Do not copy the transcript into the project. Do not imply access to conversation from another task unless that content is provided or returned by an authorized task-reading tool.
 
 ## Inspection and mode selection
 
@@ -73,7 +81,9 @@ Read by task:
 
 Use English as the operational source. Consult the Chinese mirror for review or when resolving translation drift.
 
-## Maintenance triggers
+## Chat-driven maintenance
+
+An accepted durable change established during project work triggers the mapped document update before the task ends. The user does not need to repeat a separate request to maintain the project-management folder. Explanation-only questions, hypothetical discussion, and unaccepted ideas do not trigger file changes.
 
 Update both language files when the named event occurs:
 
@@ -97,6 +107,8 @@ Regenerate `project_management\index.html` after any managed Markdown or manifes
 ## Initialization and review
 
 Run `scripts\init_project_management.mjs` with an explicit absolute project path and mode. Add one or more `--include` arguments only for confirmed modules. The command prints a machine-readable report containing created, unchanged, managed-updated, and proposed paths.
+
+After generation, replace generic unknown entries in files created by this run with confirmed intake facts. For protected conflicts, hydrate only the proposal sibling. Update the matching English and Chinese documents together; keep unavailable facts unconfirmed.
 
 Review every proposal before merging. A proposal is not current truth and must not be added to the dashboard manifest as an active document until approved.
 

@@ -61,6 +61,17 @@ async function main() {
   ]), "new-project initialization");
   const newValidation = parseJsonOutput(await run(validator, ["--project", newProject]), "new-project validation");
   if (newInit.modules.length !== 0) throw new Error("New neutral project unexpectedly included a domain module.");
+  const newProtocolChecks = [
+    [path.join(newProject, "AGENTS.md"), "## Conversation-driven project memory"],
+    [path.join(newProject, "AGENTS.zh.md"), "## 聊天驱动的项目记忆"],
+    [path.join(newProject, "project_management", "00_START_HERE.en.md"), "## Conversation intake and ongoing maintenance"],
+    [path.join(newProject, "project_management", "00_START_HERE.zh.md"), "## 聊天内容摄取与持续维护"],
+  ];
+  for (const [target, fragment] of newProtocolChecks) {
+    if (!(await fs.readFile(target, "utf8")).includes(fragment)) {
+      throw new Error(`Conversation-maintenance protocol is missing from ${target}.`);
+    }
+  }
 
   const existingProject = path.join(options.outputRoot, "existing-project");
   await fs.mkdir(path.join(existingProject, "src", "ui"), { recursive: true });
@@ -91,6 +102,10 @@ async function main() {
   }
   if (!existingInit.proposals.some((entry) => entry.target.endsWith("AGENTS.md"))) {
     throw new Error("Expected AGENTS.md conflict proposal was not created.");
+  }
+  const agentsProposal = existingInit.proposals.find((entry) => entry.target.endsWith("AGENTS.md"));
+  if (!(await fs.readFile(agentsProposal.proposal, "utf8")).includes("## Conversation-driven project memory")) {
+    throw new Error("AGENTS.md proposal is missing the conversation-maintenance protocol.");
   }
   if (!existingInit.modules.includes("frontend")) throw new Error("Confirmed frontend module was not included.");
 

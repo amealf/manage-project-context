@@ -52,6 +52,36 @@ async function exists(target) {
   }
 }
 
+function escapeRegularExpression(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+async function findProposalFiles(target) {
+  const directory = path.dirname(target);
+  if (!(await exists(directory))) return [];
+  const extension = path.extname(target);
+  const stem = path.basename(target, extension);
+  const pattern = new RegExp(`^${escapeRegularExpression(stem)}\\.project-management\\.proposed(?:\\.\\d+)?${escapeRegularExpression(extension)}$`);
+  const entries = await fs.readdir(directory, { withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isFile() && pattern.test(entry.name))
+    .map((entry) => path.join(directory, entry.name))
+    .sort((left, right) => left.localeCompare(right, "en"));
+}
+
+async function validateProtocolFile(target, fragment, label, errors, warnings) {
+  if (!(await exists(target))) return;
+  const content = await fs.readFile(target, "utf8");
+  if (content.includes(fragment)) return;
+  for (const proposal of await findProposalFiles(target)) {
+    if ((await fs.readFile(proposal, "utf8")).includes(fragment)) {
+      warnings.push(`${label} requires proposal review before the conversation-maintenance protocol becomes active.`);
+      return;
+    }
+  }
+  errors.push(`${label} is missing the conversation-maintenance protocol.`);
+}
+
 async function collectTextFiles(root) {
   const output = [];
   async function visit(directory) {
@@ -94,6 +124,35 @@ async function main() {
   for (const relative of coreRelativePaths) {
     if (!(await exists(path.join(managementRoot, ...relative.split("/"))))) errors.push(`Missing ${relative}.`);
   }
+
+  await validateProtocolFile(
+    path.join(projectRoot, "AGENTS.md"),
+    "## Conversation-driven project memory",
+    "AGENTS.md",
+    errors,
+    warnings,
+  );
+  await validateProtocolFile(
+    path.join(projectRoot, "AGENTS.zh.md"),
+    "## 聊天驱动的项目记忆",
+    "AGENTS.zh.md",
+    errors,
+    warnings,
+  );
+  await validateProtocolFile(
+    path.join(managementRoot, "00_START_HERE.en.md"),
+    "## Conversation intake and ongoing maintenance",
+    "00_START_HERE.en.md",
+    errors,
+    warnings,
+  );
+  await validateProtocolFile(
+    path.join(managementRoot, "00_START_HERE.zh.md"),
+    "## 聊天内容摄取与持续维护",
+    "00_START_HERE.zh.md",
+    errors,
+    warnings,
+  );
 
   const manifestPath = path.join(managementRoot, "project-management.json");
   let manifest = null;
@@ -151,25 +210,13 @@ async function main() {
       'id="search"',
       'id="document-navigation"',
       'id="outline-list"',
+      '.nav-item[hidden]',
       'data-theme-value="dark"',
       'data-theme-value="light"',
       "AGENTS.md",
     ];
     for (const fragment of requiredFragments) {
       if (!dashboard.includes(fragment)) errors.push(`Dashboard is missing required fragment: ${fragment}`);
-    }
-  }
-
-  for (const name of ["AGENTS.md", "AGENTS.zh.md"]) {
-    const original = path.join(projectRoot, name);
-    if (await exists(original)) {
-      const content = await fs.readFile(original, "utf8");
-      if (!content.includes("00_START_HERE.en.md")) {
-        const stem = original.slice(0, -path.extname(original).length);
-        const proposal = `${stem}.project-management.proposed${path.extname(original)}`;
-        if (await exists(proposal)) warnings.push(`${name} requires proposal review before the generated reading protocol becomes active.`);
-        else warnings.push(`${name} does not reference the generated entry document.`);
-      }
     }
   }
 

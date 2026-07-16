@@ -1,4 +1,4 @@
 interface:
   display_name: "Project Context / 项目管理目录"
-  short_description: "Bilingual project context / 双语项目管理目录"
-  default_prompt: "Use $manage-project-context to create or initialize a bilingual project-management folder with only the domain modules this project actually needs. / 使用 $manage-project-context 创建或初始化双语项目管理目录，仅加入这个项目实际需要的领域模块。"
+  short_description: "Conversation-aware project memory / 会话驱动项目记忆"
+  default_prompt: "Use $manage-project-context to build or update bilingual project memory from the available conversation and real project files, without assuming unused domains. / 使用 $manage-project-context 根据当前可用聊天和真实项目文件建立或维护双语项目记忆，不假定项目使用无关领域。"

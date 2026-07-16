@@ -83,6 +83,9 @@ The manifest lists only selected modules. Adding a module later must create its 
 - Keep root agent files concise and put the detailed reading matrix in `00_START_HERE`.
 - Make root agent files identify when each core or selected module document must be read.
 - Mark unknown facts as unconfirmed. Do not invent architecture, technology, paths, owners, requirements, or results.
+- Populate generated records from conversation that is actually available in the current task and from inspected project evidence. Do not claim access to unseen chat history.
+- Retain confirmed conclusions and useful rationale, not raw conversation transcripts. Exclude secrets and private personal data.
+- Let the latest explicit user correction supersede an older conversation summary while preserving material discrepancies with observed project behavior.
 - Keep proposals, archived material, and future ideas outside current-truth claims.
 - Use an explicit `--date` plus stable inputs for reproducible generated Markdown.
 
