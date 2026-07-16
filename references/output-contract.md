@@ -30,7 +30,9 @@ The default management directory is `project_management`. A new or existing proj
     │   ├── SOURCE_OF_TRUTH.en.md
     │   ├── SOURCE_OF_TRUTH.zh.md
     │   ├── CURRENT_VERSION.en.md
-    │   └── CURRENT_VERSION.zh.md
+    │   ├── CURRENT_VERSION.zh.md
+    │   ├── CODE_ARCHITECTURE.en.md
+    │   └── CODE_ARCHITECTURE.zh.md
     ├── 03_active_work
     │   ├── CURRENT_TASKS.en.md
     │   └── CURRENT_TASKS.zh.md
@@ -50,7 +52,6 @@ The default management directory is `project_management`. A new or existing proj
     │   ├── README.en.md
     │   └── README.zh.md
     ├── assets
-    │   ├── dashboard-template.html
     │   ├── marked.umd.js
     │   └── MARKED_LICENSE.md
     ├── tools
@@ -83,6 +84,7 @@ The manifest lists only selected modules. Adding a module later must create its 
 - Keep root agent files concise and put the detailed reading matrix in `00_START_HERE`.
 - Make root agent files identify when each core or selected module document must be read.
 - Mark unknown facts as unconfirmed. Do not invent architecture, technology, paths, owners, requirements, or results.
+- Keep `CODE_ARCHITECTURE` grounded in inspected code or explicit confirmation. Mark it not applicable when the project has no code, and update its change log when architecture changes.
 - Populate generated records from conversation that is actually available in the current task and from inspected project evidence. Do not claim access to unseen chat history.
 - Retain confirmed conclusions and useful rationale, not raw conversation transcripts. Exclude secrets and private personal data.
 - Let the latest explicit user correction supersede an older conversation summary while preserving material discrepancies with observed project behavior.
@@ -113,6 +115,7 @@ Choose the first unused positive suffix. Report the original and proposal paths.
 
 The generated dashboard must:
 
+- Be produced entirely by the bundled `tools\build_dashboard.mjs` generator from the manifest and managed Markdown; no separate HTML template is required.
 - Open in Chinese and select the Chinese agent rules by default.
 - Load both English and Chinese files from the manifest.
 - Include `AGENTS.md` and `AGENTS.zh.md` in the first `Read first / 优先阅读` group.

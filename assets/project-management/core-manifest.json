@@ -127,6 +127,26 @@
       "policy": "交付物、行为、结构、接口、依赖或流程变化后更新。"
     },
     {
+      "id": "architecture.en",
+      "pair": "architecture",
+      "group": "priority",
+      "path": "02_current_state/CODE_ARCHITECTURE.en.md",
+      "lang": "en",
+      "title": "Code Architecture",
+      "lead": "Current code flow, components, responsibilities, dependencies, and boundaries.",
+      "policy": "Update when code entry points, component responsibilities, call relationships, data flow, dependencies, or interface boundaries change."
+    },
+    {
+      "id": "architecture.zh",
+      "pair": "architecture",
+      "group": "priority",
+      "path": "02_current_state/CODE_ARCHITECTURE.zh.md",
+      "lang": "zh",
+      "title": "代码架构",
+      "lead": "当前代码流程、组件、职责、依赖与边界。",
+      "policy": "代码入口、组件职责、调用关系、数据流、依赖或接口边界变化后更新。"
+    },
+    {
       "id": "tasks.en",
       "pair": "tasks",
       "group": "priority",

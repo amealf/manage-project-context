@@ -74,7 +74,8 @@ Read by task:
 | --- | --- |
 | Explain or answer | Only documents needed to answer; do not modify files unless requested. |
 | Define scope or plan | `PROJECT_GOAL`, `PROJECT_CONSTRAINTS`, `CURRENT_TASKS` |
-| Change a deliverable, current behavior, or project structure | Goal, constraints, source of truth, current version, current tasks, relevant decisions |
+| Change a deliverable or current behavior | Goal, constraints, source of truth, current version, current tasks, relevant decisions |
+| Change code structure, execution flow, components, dependencies, data flow, or interface boundaries | Source of truth, current version, code architecture, current tasks, relevant decisions |
 | Change a confirmed domain | The corresponding optional module plus current state and decisions |
 | Propose a new direction | Project history, decisions, next directions |
 | Reuse old work | Archive guide and the archived item's note |
@@ -93,6 +94,7 @@ Update both language files when the named event occurs:
 | User changes a durable cross-project constraint | `PROJECT_CONSTRAINTS` |
 | Active entry point, configuration, branch, artifact, or authoritative path changes | `SOURCE_OF_TRUTH` |
 | A deliverable, current behavior, project structure, interface, dependency, or operating procedure changes | `CURRENT_VERSION` |
+| A code entry point, component responsibility, dependency or call relationship, data flow, generated artifact, or interface boundary changes | `CODE_ARCHITECTURE` |
 | A task is declared, completed, blocked, resumed, or changes scope | `CURRENT_TASKS` |
 | A durable choice is accepted, retired, or reversed | `DECISIONS` |
 | An event changes the interpretation of past work | `PROJECT_HISTORY` |

@@ -56,7 +56,8 @@ Load other documents only when the task requires them.
 | --- | --- |
 | Explain or answer | Only the files needed for the answer; do not mutate project state unless requested. |
 | Change scope or plan | Goal, constraints, and current tasks. |
-| Change a deliverable, current behavior, or project structure | Goal, constraints, source of truth, current version, current tasks, and relevant decisions. |
+| Change a deliverable or current behavior | Goal, constraints, source of truth, current version, current tasks, and relevant decisions. |
+| Change code structure, execution flow, components, dependencies, data flow, or interface boundaries | Source of truth, current version, code architecture, current tasks, and relevant decisions. |
 | Change a confirmed domain | The matching active module listed below, plus current state and decisions. |
 | Propose a direction | Decisions, project history, and next directions. |
 | Reuse a reference | Reference index and its source file. |
@@ -74,6 +75,7 @@ Load other documents only when the task requires them.
 | `PROJECT_CONSTRAINTS` | A durable cross-project constraint is accepted, changed, or retired. |
 | `SOURCE_OF_TRUTH` | An authoritative path, entry point, branch, configuration, or artifact changes. |
 | `CURRENT_VERSION` | A deliverable, current behavior, project structure, interface, dependency, or operating procedure changes. |
+| `CODE_ARCHITECTURE` | A code entry point, component responsibility, dependency or call relationship, data flow, generated artifact, or interface boundary changes. Mark it not applicable when the project has no code. |
 | `CURRENT_TASKS` | A task is declared, completed, blocked, resumed, or changes scope. |
 | `DECISIONS` | A durable choice is accepted, retired, or reversed. |
 | `PROJECT_HISTORY` | An event changes how past or current work should be understood. |

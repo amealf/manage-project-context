@@ -72,6 +72,15 @@ async function main() {
       throw new Error(`Conversation-maintenance protocol is missing from ${target}.`);
     }
   }
+  const architectureChecks = [
+    [path.join(newProject, "project_management", "02_current_state", "CODE_ARCHITECTURE.en.md"), "## Architecture change log"],
+    [path.join(newProject, "project_management", "02_current_state", "CODE_ARCHITECTURE.zh.md"), "## 架构变更日志"],
+  ];
+  for (const [target, fragment] of architectureChecks) {
+    if (!(await fs.readFile(target, "utf8")).includes(fragment)) {
+      throw new Error(`Code-architecture record is missing from ${target}.`);
+    }
+  }
 
   const existingProject = path.join(options.outputRoot, "existing-project");
   await fs.mkdir(path.join(existingProject, "src", "ui"), { recursive: true });

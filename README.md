@@ -1,18 +1,16 @@
 # manage-project-context
 
-[中文介绍](#中文介绍) · [English](#english)
+[中文](#中文) · [English](#english)
 
-## 中文介绍
+## 中文
 
-项目做久了，最容易丢的往往不是文件，而是「为什么这样做」「现在做到哪里」「哪些结论仍然有效」。这些内容散落在聊天里，换一个任务或隔一段时间后就很难重新拼起来。
+丢失上下文是长期项目中很常见的问题。「为什么这样做」「现在做到哪里」「在哪些约束下工作」，ai在长上下文中经常丢失这些内容。另外，提到过的内容里，AI也无法理解哪些要求是重要的、哪些是需要重点阅读的。修改agent.md是一个临时的解决方案，更好的方案是使用不同权重的markdown文件管理项目的各个部分。
 
-`manage-project-context` 是一个 Codex Skill，用来把这些项目记忆留在项目里。它会建立一套精简的中英文管理文档，记录目标、约束、任务、决定以及其他需要长期保留的项目背景，并生成一个本地 Dashboard，方便查阅。
-
-新项目会得到一套中立框架。Skill 不会因为管理 Dashboard 使用 HTML，就认定项目需要前端；也不会在项目类型尚未明确时添加后端、研究、数据、部署或安全文档。
+`manage-project-context` 是一个管理项目进度的Skill。它会建立一个管理文件夹，在里面使用不同的markdown文件，记录目标、约束、任务、决定、代码架构以及其他需要长期保留的项目背景，并生成一个本地 Dashboard，方便查阅。
 
 已有项目会同时查看当前任务中可用的聊天和项目中的实际文件。原文件保持不变；遇到同名冲突时，Skill 会生成一个可审阅的提案文件。聊天中的描述与项目实际情况不一致时，两边的差异会被保留下来，而不是悄悄选择其中一个版本。
 
-随着项目继续推进，聊天里已经确认的目标、约束、决定或任务状态会更新到对应文档。Skill 只记录结论和必要理由，不保存整段聊天，也不会声称读过当前任务之外不可见的历史消息。
+随着项目继续推进，聊天里已经确认的目标、约束、决定、代码架构或任务状态会更新到对应文档。
 
 ### 它会建立什么
 
@@ -48,25 +46,23 @@
 
 ## English
 
-The hardest part of returning to a project is often not finding the files. It is recovering why a choice was made, what is still current, and where the work stopped. Those details tend to disappear into long conversations.
+Long-running projects often lose context. The reasons behind a decision, the current stopping point, and the constraints that still matter can disappear in a long conversation. AI can also struggle to tell which details are essential and which files deserve the most attention. Editing `AGENTS.md` can help for a while, but a clearer approach is to keep each part of the project in its own Markdown file with an explicit reading order.
 
-`manage-project-context` is a Codex Skill that keeps that memory in the project. It creates a compact set of bilingual project documents for goals, constraints, tasks, decisions, and other context worth keeping. It also builds a local Dashboard for browsing them.
+`manage-project-context` is a Codex Skill for keeping project progress and context organized. It creates a management folder with separate Markdown files for goals, constraints, tasks, decisions, code architecture, and other information worth preserving. It also generates a local Dashboard for browsing those documents.
 
-A new project gets a neutral structure. The Skill does not treat its HTML Dashboard as evidence that the project needs a frontend, and it does not add backend, research, data, deployment, or security documents until the project actually uses those areas.
+For an existing project, the Skill reads the conversation available in the current task together with the files already in the project. Existing files stay unchanged. When generated content conflicts with a file that is already there, the Skill creates a reviewable proposal. If the conversation and the project disagree, it records the difference instead of quietly choosing one version.
 
-For an existing project, the Skill looks at both the conversation available in the current task and the files already in the project. Existing files stay untouched. If a generated file conflicts with one that is already there, the Skill writes a reviewable proposal beside it. When the conversation and the files disagree, it records the difference instead of quietly choosing one.
-
-As work continues, confirmed changes to goals, constraints, decisions, or task status are added to the relevant documents. The Skill keeps only the conclusion and the reasoning needed to understand it, not the full transcript. It does not claim access to chat history outside the current task unless that history was provided or made available through an authorized tool.
+As the project moves forward, confirmed changes to goals, constraints, decisions, architecture, or task status are written back to the relevant documents.
 
 ### What it creates
 
 - Root `AGENTS.md` and `AGENTS.zh.md` files
 - English operational documents with corresponding Chinese versions for review
 - Task-based reading rules
-- Rules for updating project memory when changes are confirmed in conversation
+- Rules for updating project memory when a change is confirmed in conversation
 - Proposal files for conflicts, without overwriting existing files
 - An offline Dashboard with Chinese as the default language, search, and light/dark themes
-- Domain documents only when the project has evidence for them
+- Domain documents only when the project actually needs them
 
 ### Use it
 
@@ -79,13 +75,13 @@ Use $skill-installer to install https://github.com/amealf/manage-project-context
 New project:
 
 ```text
-Use $manage-project-context to create the management scaffold for this new project and fill it with the goals, constraints, decisions, and tasks confirmed in this conversation. The project type is still unknown, so do not add domain modules.
+Use $manage-project-context to create the management framework for this new project and fill it with the goals, constraints, decisions, and tasks confirmed in the current conversation. The project type is still unknown, so do not add domain modules.
 ```
 
 Existing project:
 
 ```text
-Use $manage-project-context to read the available conversation and project files, add a project-management folder without replacing existing content, and keep later accepted chat changes synchronized with the right documents.
+Use $manage-project-context to read the available conversation and project files, add a project-management folder without replacing existing content, and keep later confirmed changes synchronized with the relevant documents.
 ```
 
 The generator runs on Node.js, but the managed project does not need to use Node.js.
