@@ -329,7 +329,13 @@ async function materializeTemplates(templateBase, projectRoot, managementDirecto
 }
 
 function mergeDocumentEntries(existing, desired) {
-  const documents = Array.isArray(existing) ? [...existing] : [];
+  const desiredById = new Map(desired.map((document) => [document.id, document]));
+  const documents = Array.isArray(existing)
+    ? existing.map((document) => {
+      const managed = desiredById.get(document?.id);
+      return managed ? { ...document, group: managed.group } : document;
+    })
+    : [];
   const ids = new Set(documents.map((document) => document && document.id).filter(Boolean));
   for (const document of desired) {
     if (!ids.has(document.id)) {

@@ -12,11 +12,13 @@
 
 ## 按任务读取
 
-- 范围或规划：阅读 `01_goal\PROJECT_GOAL.en.md`、`01_goal\PROJECT_CONSTRAINTS.en.md` 与 `03_active_work\CURRENT_TASKS.en.md`。
+- 范围或规划：阅读 `01_goal\PROJECT_GOAL.en.md`、`01_goal\PROJECT_CONSTRAINTS.en.md`、`03_active_work\CURRENT_TASKS.en.md` 与 `03_active_work\WORK_PROGRESS.en.md`。
 - 交付物或当前行为修改：另外阅读 `02_current_state\SOURCE_OF_TRUTH.en.md`、`02_current_state\CURRENT_VERSION.en.md` 与 `04_decisions\DECISIONS.en.md` 中相关记录。
-- 代码入口、执行流程、组件职责、依赖、数据流或接口边界修改：另外阅读 `02_current_state\CODE_ARCHITECTURE.en.md`。
-- 新方向或恢复旧工作：阅读 `06_history\PROJECT_HISTORY.en.md`、`07_future\NEXT_DIRECTIONS.en.md` 与相关存档说明。
-- 参考材料或存档证据：使用前在 `08_references\README.en.md` 或 `99_archive\README.en.md` 中确认来源。
+- 行为修复，或变化理由会影响后续工作：另外阅读 `04_decisions\CHANGE_REASONS.en.md`。
+- 代码入口、执行流程、组件职责、依赖、数据流或接口边界修改：另外阅读 `02_current_state\CODE_ARCHITECTURE.en.md` 与 `03_active_work\WORK_PROGRESS.en.md`。
+- 新方向：阅读 `07_future\NEXT_DIRECTIONS.en.md`，以及当前目标、约束、任务与工作进展。
+- 历史或非活动工作：只有任务需要过去证据、复用或恢复时，才阅读 `06_history\PROJECT_HISTORY.en.md` 与相关 `99_archive` 说明。
+- 参考材料：使用前在 `08_references\README.en.md` 中确认来源。
 
 本节路径均相对于 `{{MANAGEMENT_DIR}}`。
 
@@ -25,6 +27,7 @@
 - 开始修改项目时，阅读当前任务内可用的聊天与委派上下文。不能声称读取了不可见聊天。
 - 将用户最新确认内容与本文件、`00_START_HERE.en.md` 及任务对应英文文档进行比较。较新的明确更正覆盖较旧摘要。
 - 项目工作确认了长期变化后，在任务结束前更新对应英文文档与中文镜像；用户无需另外提出维护文档。
+- 已完成或发生重要变化的工作追加到 `03_active_work\WORK_PROGRESS.en.md` 及其中文镜像。主交付版本或工作方法变化时，存档已经失效的详细进展，并保留简洁恢复指针。
 - 解释型问题、假设讨论或未确认想法不触发文件修改。
 - 只记录简明事实、决定与有用理由，不保存聊天原文、秘密信息或私人个人数据。
 
@@ -44,5 +47,6 @@
 
 - 使用 `00_START_HERE.en.md` 的维护触发条件归类聊天中已确认的变化。
 - 按 `00_START_HERE.en.md` 的变更类型规则更新对应文档。
+- 工作完成或发生重要变化时更新 `WORK_PROGRESS`；行为变化需要长期理由时更新 `CHANGE_REASONS`。
 - 管理 Markdown 或 manifest 变化后运行 `node "{{MANAGEMENT_DIR}}\tools\build_dashboard.mjs"`。
 - 变更影响 Dashboard 布局或交互时进行页面检查。

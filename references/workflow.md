@@ -73,12 +73,13 @@ Read by task:
 | Task | Additional English documents |
 | --- | --- |
 | Explain or answer | Only documents needed to answer; do not modify files unless requested. |
-| Define scope or plan | `PROJECT_GOAL`, `PROJECT_CONSTRAINTS`, `CURRENT_TASKS` |
-| Change a deliverable or current behavior | Goal, constraints, source of truth, current version, current tasks, relevant decisions |
-| Change code structure, execution flow, components, dependencies, data flow, or interface boundaries | Source of truth, current version, code architecture, current tasks, relevant decisions |
-| Change a confirmed domain | The corresponding optional module plus current state and decisions |
-| Propose a new direction | Project history, decisions, next directions |
-| Reuse old work | Archive guide and the archived item's note |
+| Define scope or plan | `PROJECT_GOAL`, `PROJECT_CONSTRAINTS`, `CURRENT_TASKS`, `WORK_PROGRESS` |
+| Change a deliverable or current behavior | Goal, constraints, source of truth, current version, current tasks, work progress, relevant decisions |
+| Repair or materially change behavior | Current version, work progress, change reasons, relevant decisions |
+| Change code structure, execution flow, components, dependencies, data flow, or interface boundaries | Source of truth, current version, code architecture, current tasks, work progress, relevant decisions |
+| Change a confirmed domain | The corresponding optional module plus current state, work progress, and decisions |
+| Propose a new direction | Current goal, constraints, tasks, work progress, decisions, next directions |
+| Inspect, reuse, or restore historical work | Project history, archive guide, and the archived item's note |
 
 Use English as the operational source. Consult the Chinese mirror for review or when resolving translation drift.
 
@@ -96,6 +97,8 @@ Update both language files when the named event occurs:
 | A deliverable, current behavior, project structure, interface, dependency, or operating procedure changes | `CURRENT_VERSION` |
 | A code entry point, component responsibility, dependency or call relationship, data flow, generated artifact, or interface boundary changes | `CODE_ARCHITECTURE` |
 | A task is declared, completed, blocked, resumed, or changes scope | `CURRENT_TASKS` |
+| Work completes or changes materially enough to affect handoff, review, or current project understanding | `WORK_PROGRESS` |
+| A material behavior change needs durable rationale and an evidence-impact boundary | `CHANGE_REASONS` |
 | A durable choice is accepted, retired, or reversed | `DECISIONS` |
 | An event changes the interpretation of past work | `PROJECT_HISTORY` |
 | A plausible but uncommitted direction appears or is retired | `NEXT_DIRECTIONS` |
@@ -105,6 +108,8 @@ Update both language files when the named event occurs:
 | Reading order or maintenance policy changes | Root agent files and `00_START_HERE` |
 
 Regenerate `project_management\index.html` after any managed Markdown or manifest change.
+
+Keep history and inactive material outside normal reading. When a major delivery version or working method changes and older detail would mislead current work, archive the superseded `WORK_PROGRESS` body in a dated folder, preserve it, and leave a concise restoration pointer on the active page.
 
 ## Initialization and review
 

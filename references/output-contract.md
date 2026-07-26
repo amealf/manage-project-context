@@ -35,10 +35,14 @@ The default management directory is `project_management`. A new or existing proj
     │   └── CODE_ARCHITECTURE.zh.md
     ├── 03_active_work
     │   ├── CURRENT_TASKS.en.md
-    │   └── CURRENT_TASKS.zh.md
+    │   ├── CURRENT_TASKS.zh.md
+    │   ├── WORK_PROGRESS.en.md
+    │   └── WORK_PROGRESS.zh.md
     ├── 04_decisions
     │   ├── DECISIONS.en.md
-    │   └── DECISIONS.zh.md
+    │   ├── DECISIONS.zh.md
+    │   ├── CHANGE_REASONS.en.md
+    │   └── CHANGE_REASONS.zh.md
     ├── 06_history
     │   ├── PROJECT_HISTORY.en.md
     │   └── PROJECT_HISTORY.zh.md
@@ -85,6 +89,8 @@ The manifest lists only selected modules. Adding a module later must create its 
 - Make root agent files identify when each core or selected module document must be read.
 - Mark unknown facts as unconfirmed. Do not invent architecture, technology, paths, owners, requirements, or results.
 - Keep `CODE_ARCHITECTURE` grounded in inspected code or explicit confirmation. Mark it not applicable when the project has no code, and update its change log when architecture changes.
+- Keep `CURRENT_TASKS` forward-looking and `WORK_PROGRESS` outcome-focused. Archive superseded detailed progress when a major version or working method changes and retain a restoration pointer.
+- Use `CHANGE_REASONS` only for material behavior changes whose reason, prior behavior, updated behavior, evidence impact, and validity boundary must remain auditable.
 - Populate generated records from conversation that is actually available in the current task and from inspected project evidence. Do not claim access to unseen chat history.
 - Retain confirmed conclusions and useful rationale, not raw conversation transcripts. Exclude secrets and private personal data.
 - Let the latest explicit user correction supersede an older conversation summary while preserving material discrepancies with observed project behavior.
@@ -119,6 +125,7 @@ The generated dashboard must:
 - Open in Chinese and select the Chinese agent rules by default.
 - Load both English and Chinese files from the manifest.
 - Include `AGENTS.md` and `AGENTS.zh.md` in the first `Read first / 优先阅读` group.
+- Group documents by reading role: required entry, goals and constraints, current state, active work, conditional domain rules, project reference, and history/archive. Hide groups with no active documents.
 - Provide persistent language and light/dark theme controls.
 - Provide full-text document search, left document navigation, a readable Markdown body, and a floating in-page outline.
 - Work offline through relative assets and a vendored Markdown renderer.

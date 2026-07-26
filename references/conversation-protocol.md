@@ -26,6 +26,8 @@ Before initialization or project-changing work, form a compact internal intake l
 | Constraints | Confirmed boundaries, required quality, prohibited actions |
 | Decisions | Accepted, retired, or reversed durable choices and rationale |
 | Tasks | Active work, status, acceptance, blockers, handoff state |
+| Work progress | Completed or materially changed work, outcome, evidence, limits, and handoff paths |
+| Change reasons | Material behavior changes whose prior behavior and evidence impact must remain auditable |
 | Current state | Confirmed deliverables, behavior, authoritative paths, known gaps |
 | Domains | Only user-confirmed or strongly evidenced optional domains |
 | Unknowns | Missing, conflicting, or tentative claims that need confirmation |
@@ -54,6 +56,6 @@ For an existing project, combine the intake ledger with actual project evidence.
 
 At the beginning of each project-changing task, read the latest available conversation, root `AGENTS.md`, `00_START_HERE.en.md`, and the English documents selected by the task matrix.
 
-Before finishing a project-changing task, classify every accepted durable chat change through the maintenance-trigger table. Update the mapped English document and Chinese mirror, rebuild the Dashboard, and validate the result. This maintenance is part of the project change even when the user does not restate it.
+Before finishing a project-changing task, classify every accepted durable chat change through the maintenance-trigger table. Update the mapped English document and Chinese mirror, append completed or materially changed work to `WORK_PROGRESS`, add `CHANGE_REASONS` when a behavior change needs durable rationale, rebuild the Dashboard, and validate the result. This maintenance is part of the project change even when the user does not restate it.
 
 Do not modify project files for explanation-only questions, brainstorming, hypotheticals, or unaccepted suggestions. If a new idea should be retained but is not active, record it as proposed or future only when the user asks to retain it or clearly establishes it as a project candidate.

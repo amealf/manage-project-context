@@ -47,6 +47,7 @@ Read before project changes:
 5. `02_current_state\SOURCE_OF_TRUTH.en.md`
 6. `02_current_state\CURRENT_VERSION.en.md`
 7. `03_active_work\CURRENT_TASKS.en.md`
+8. `03_active_work\WORK_PROGRESS.en.md`
 
 Load other documents only when the task requires them.
 
@@ -55,13 +56,14 @@ Load other documents only when the task requires them.
 | Task | Additional documents |
 | --- | --- |
 | Explain or answer | Only the files needed for the answer; do not mutate project state unless requested. |
-| Change scope or plan | Goal, constraints, and current tasks. |
-| Change a deliverable or current behavior | Goal, constraints, source of truth, current version, current tasks, and relevant decisions. |
-| Change code structure, execution flow, components, dependencies, data flow, or interface boundaries | Source of truth, current version, code architecture, current tasks, and relevant decisions. |
-| Change a confirmed domain | The matching active module listed below, plus current state and decisions. |
-| Propose a direction | Decisions, project history, and next directions. |
+| Change scope or plan | Goal, constraints, current tasks, and work progress. |
+| Change a deliverable or current behavior | Goal, constraints, source of truth, current version, current tasks, work progress, and relevant decisions. |
+| Repair or materially change behavior | Current version, work progress, change reasons, and relevant decisions. |
+| Change code structure, execution flow, components, dependencies, data flow, or interface boundaries | Source of truth, current version, code architecture, current tasks, work progress, and relevant decisions. |
+| Change a confirmed domain | The matching active module listed below, plus current state, work progress, and decisions. |
+| Propose a direction | Current goal, constraints, tasks, work progress, decisions, and next directions. |
 | Reuse a reference | Reference index and its source file. |
-| Reopen inactive work | Archive guide and the archived item's note. |
+| Inspect, reuse, or restore historical work | Project history, archive guide, and the archived item's note. |
 
 ### Active domain reading rules
 
@@ -77,6 +79,8 @@ Load other documents only when the task requires them.
 | `CURRENT_VERSION` | A deliverable, current behavior, project structure, interface, dependency, or operating procedure changes. |
 | `CODE_ARCHITECTURE` | A code entry point, component responsibility, dependency or call relationship, data flow, generated artifact, or interface boundary changes. Mark it not applicable when the project has no code. |
 | `CURRENT_TASKS` | A task is declared, completed, blocked, resumed, or changes scope. |
+| `WORK_PROGRESS` | Work completes or changes materially enough to affect handoff, review, or the current understanding of the project. |
+| `CHANGE_REASONS` | A material behavior change needs a durable reason, prior behavior, updated behavior, evidence impact, and validity boundary. |
 | `DECISIONS` | A durable choice is accepted, retired, or reversed. |
 | `PROJECT_HISTORY` | An event changes how past or current work should be understood. |
 | `NEXT_DIRECTIONS` | A plausible direction appears, changes, becomes active, or is retired. |
@@ -90,6 +94,12 @@ Update the English source and Chinese mirror together. Regenerate `index.html` w
 ```powershell
 node "{{MANAGEMENT_DIR}}\tools\build_dashboard.mjs"
 ```
+
+## History and archive boundary
+
+The Dashboard separates current guidance and work from project history and inactive material. Do not load history or archive documents during normal work unless the task needs past evidence, reuse, or restoration.
+
+When a major delivery version or working method changes and prior detailed progress would mislead current work, move the superseded body into a dated folder under `99_archive`, keep a concise restoration pointer in `WORK_PROGRESS`, and preserve the archived material.
 
 ## Initialization inventory
 

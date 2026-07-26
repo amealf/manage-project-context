@@ -1,0 +1,35 @@
+# Change Reasons
+
+## Purpose
+
+Explain material behavior changes that future work may need to audit. Each entry preserves the reason, prior behavior, updated behavior, and evidence impact. This complements the concise decision register and work-progress log.
+
+## When to add an entry
+
+Add an entry when a repair or other material change alters observable behavior, defaults, validity boundaries, reproducibility, evidence interpretation, or an important user workflow. Use `DECISIONS.en.md` for durable choices and `WORK_PROGRESS.en.md` for completed-work summaries.
+
+Routine status updates and minor presentation edits do not need an entry unless they materially affect review or use.
+
+## Current entries
+
+No project-specific behavior change is confirmed during initialization.
+
+## Entry format
+
+```markdown
+## YYYY-MM-DD — Short change title
+
+**Reason:** Why the change was needed.
+
+**Prior behavior:** What happened before the change.
+
+**Updated behavior:** What happens now.
+
+**Evidence impact:** Which outputs, tests, records, or interpretations are affected.
+
+**Validity boundary:** Where the new explanation applies and what remains unchanged or unconfirmed.
+```
+
+## Maintenance
+
+Place new entries above older entries. Link evidence instead of copying large output. Update `CURRENT_VERSION.en.md`, `CODE_ARCHITECTURE.en.md`, or `DECISIONS.en.md` as well when the same change affects current behavior, architecture, or a durable choice.

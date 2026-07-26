@@ -16,8 +16,12 @@ const coreRelativePaths = [
   "02_current_state/CODE_ARCHITECTURE.zh.md",
   "03_active_work/CURRENT_TASKS.en.md",
   "03_active_work/CURRENT_TASKS.zh.md",
+  "03_active_work/WORK_PROGRESS.en.md",
+  "03_active_work/WORK_PROGRESS.zh.md",
   "04_decisions/DECISIONS.en.md",
   "04_decisions/DECISIONS.zh.md",
+  "04_decisions/CHANGE_REASONS.en.md",
+  "04_decisions/CHANGE_REASONS.zh.md",
   "06_history/PROJECT_HISTORY.en.md",
   "06_history/PROJECT_HISTORY.zh.md",
   "07_future/NEXT_DIRECTIONS.en.md",
@@ -164,6 +168,11 @@ async function main() {
       manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
       if (manifest.generatedBy !== "manage-project-context") errors.push("Manifest ownership marker is missing.");
       if (manifest.defaultLanguage !== "zh") errors.push("Dashboard default language must be zh.");
+      for (const group of ["priority", "planning", "state", "work", "domain", "reference", "archive"]) {
+        if (!manifest.groups?.[group]?.en || !manifest.groups?.[group]?.zh) {
+          errors.push(`Manifest group ${group} requires English and Chinese labels.`);
+        }
+      }
       if (!Array.isArray(manifest.documents)) errors.push("Manifest documents must be an array.");
       else checkBilingualPairs(manifest.documents, errors);
     } catch (error) {
@@ -190,6 +199,29 @@ async function main() {
     }
     if (agentChinese?.group !== "priority" || path.resolve(managementRoot, ...(agentChinese?.path || "").split("/")) !== path.join(projectRoot, "AGENTS.zh.md")) {
       errors.push("AGENTS.zh.md must resolve to the project root and appear in the priority group.");
+    }
+    const expectedGroups = new Map([
+      ["goal", "planning"],
+      ["constraints", "planning"],
+      ["source", "state"],
+      ["version", "state"],
+      ["architecture", "state"],
+      ["tasks", "work"],
+      ["work-progress", "work"],
+      ["decisions", "reference"],
+      ["change-reasons", "reference"],
+      ["future", "reference"],
+      ["references", "reference"],
+      ["history", "archive"],
+      ["archive", "archive"],
+    ]);
+    for (const [pair, expectedGroup] of expectedGroups) {
+      for (const language of ["en", "zh"]) {
+        const document = manifest.documents.find((entry) => entry.pair === pair && entry.lang === language);
+        if (document?.group !== expectedGroup) {
+          errors.push(`Manifest pair ${pair}.${language} must appear in the ${expectedGroup} group.`);
+        }
+      }
     }
   }
 

@@ -81,6 +81,25 @@ async function main() {
       throw new Error(`Code-architecture record is missing from ${target}.`);
     }
   }
+  const classificationChecks = [
+    [path.join(newProject, "project_management", "03_active_work", "WORK_PROGRESS.en.md"), "## Active delivery or method identity"],
+    [path.join(newProject, "project_management", "03_active_work", "WORK_PROGRESS.zh.md"), "## 当前交付版本或工作方法"],
+    [path.join(newProject, "project_management", "04_decisions", "CHANGE_REASONS.en.md"), "## Entry format"],
+    [path.join(newProject, "project_management", "04_decisions", "CHANGE_REASONS.zh.md"), "## 记录格式"],
+  ];
+  for (const [target, fragment] of classificationChecks) {
+    if (!(await fs.readFile(target, "utf8")).includes(fragment)) {
+      throw new Error(`General project classification document is missing from ${target}.`);
+    }
+  }
+  const newManifest = JSON.parse(await fs.readFile(path.join(newProject, "project_management", "project-management.json"), "utf8"));
+  for (const group of ["priority", "planning", "state", "work", "domain", "reference", "archive"]) {
+    if (!newManifest.groups[group]) throw new Error(`Expected Dashboard group is missing: ${group}.`);
+  }
+  const groupByPair = new Map(newManifest.documents.filter((entry) => entry.lang === "en").map((entry) => [entry.pair, entry.group]));
+  for (const [pair, group] of [["goal", "planning"], ["architecture", "state"], ["work-progress", "work"], ["change-reasons", "reference"], ["history", "archive"]]) {
+    if (groupByPair.get(pair) !== group) throw new Error(`Unexpected group for ${pair}: ${groupByPair.get(pair)}.`);
+  }
 
   const existingProject = path.join(options.outputRoot, "existing-project");
   await fs.mkdir(path.join(existingProject, "src", "ui"), { recursive: true });
@@ -118,11 +137,42 @@ async function main() {
   }
   if (!existingInit.modules.includes("frontend")) throw new Error("Confirmed frontend module was not included.");
 
+  const existingManifestPath = path.join(existingProject, "project_management", "project-management.json");
+  const legacyManifest = JSON.parse(await fs.readFile(existingManifestPath, "utf8"));
+  delete legacyManifest.groups.planning;
+  delete legacyManifest.groups.state;
+  delete legacyManifest.groups.work;
+  delete legacyManifest.groups.archive;
+  for (const document of legacyManifest.documents) {
+    if (document.pair === "goal") document.group = "priority";
+  }
+  await fs.writeFile(existingManifestPath, `${JSON.stringify(legacyManifest, null, 2)}\n`, "utf8");
+
+  const migrationInit = parseJsonOutput(await run(initializer, [
+    "--project", existingProject,
+    "--mode", "existing",
+    "--project-name", "Existing UI Project",
+    "--goal-en", "Maintain the existing user interface without replacing project-owned files.",
+    "--goal-zh", "维护现有用户界面，同时保留项目已有文件。",
+    "--include", "frontend",
+    "--date", options.date,
+  ]), "classification migration");
+  const migratedManifest = JSON.parse(await fs.readFile(existingManifestPath, "utf8"));
+  const migratedGoal = migratedManifest.documents.find((entry) => entry.pair === "goal" && entry.lang === "en");
+  if (migratedGoal?.group !== "planning") throw new Error("Owned manifest classification was not migrated.");
+  for (const group of ["planning", "state", "work", "archive"]) {
+    if (!migratedManifest.groups[group]) throw new Error(`Owned manifest group was not added during migration: ${group}.`);
+  }
+  if (!migrationInit.managedUpdated.some((entry) => entry.endsWith("project-management.json"))) {
+    throw new Error("Classification migration did not report the owned manifest update.");
+  }
+  const migratedValidation = parseJsonOutput(await run(validator, ["--project", existingProject]), "classification migration validation");
+
   console.log(JSON.stringify({
-    ok: newValidation.ok && existingValidation.ok,
+    ok: newValidation.ok && existingValidation.ok && migratedValidation.ok,
     outputRoot: options.outputRoot,
     newProject: { initialization: newInit, validation: newValidation },
-    existingProject: { initialization: existingInit, validation: existingValidation },
+    existingProject: { initialization: existingInit, validation: existingValidation, migration: migrationInit, migratedValidation },
   }, null, 2));
 }
 

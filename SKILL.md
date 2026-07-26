@@ -1,6 +1,6 @@
 ---
 name: manage-project-context
-description: Create, initialize, and maintain a reusable bilingual project-management folder for an existing or new project in any domain. Use when Codex is asked to create a project context or project management folder, bootstrap AGENTS.md and AGENTS.zh.md, turn available current-task conversation or delegated context into confirmed project records, track code architecture only when real code exists, keep management documents synchronized as chat establishes durable project changes, add only relevant domain modules, generate an offline searchable dashboard from Markdown, or preserve an existing project's files while adding management memory. 创建、初始化并维护适用于任意领域的通用双语项目管理目录；当用户要求为现有或新项目建立项目上下文、AGENTS 规则、中英文管理文档、把当前任务可用聊天或委派上下文整理为已确认项目记录、只在存在真实代码时记录代码架构、随聊天中的长期项目变化维护文档、按实际用途添加领域模块、从 Markdown 生成离线 Dashboard，或在保留已有文件的情况下建立项目记忆时使用。
+description: Create, initialize, and maintain a reusable bilingual project-management folder for an existing or new project in any domain. Use when Codex is asked to create a project context or project management folder, bootstrap AGENTS.md and AGENTS.zh.md, turn available current-task conversation or delegated context into confirmed project records, organize goals, current state, active work, change reasons, references, and archives into task-routed categories, track code architecture only when real code exists, keep management documents synchronized as chat establishes durable project changes, add only relevant domain modules, generate an offline searchable dashboard from Markdown, or preserve an existing project's files while adding management memory. 创建、初始化并维护适用于任意领域的通用双语项目管理目录；当用户要求为现有或新项目建立项目上下文、AGENTS 规则、中英文管理文档、把当前任务可用聊天或委派上下文整理为已确认项目记录、把目标、当前状态、当前工作、变更理由、参考与存档组织为按任务路由的分类、只在存在真实代码时记录代码架构、随聊天中的长期项目变化维护文档、按实际用途添加领域模块、从 Markdown 生成离线 Dashboard，或在保留已有文件的情况下建立项目记忆时使用。
 ---
 
 # Manage Project Context
@@ -23,7 +23,7 @@ Create a portable project-management folder with English operational documents, 
 
    For a new project, replace `--mode existing` with `--mode new`.
 8. Add `--include <module>` only for a user-confirmed or strongly evidenced domain. Supported modules are `frontend`, `backend`, `research`, `data`, `deployment`, and `security`. Omit all optional modules when the project's shape is unknown.
-9. Hydrate files created by this run with concise confirmed intake facts. For conflicts, update only the generated proposal, never the user-owned target. Put goals, constraints, accepted decisions, active tasks, current state, and unknowns in their mapped bilingual documents. Populate `CODE_ARCHITECTURE` only from inspected code or explicit confirmation; mark it not applicable when the project has no code. Summarize durable facts; never copy a raw transcript or secrets.
+9. Hydrate files created by this run with concise confirmed intake facts. For conflicts, update only the generated proposal, never the user-owned target. Put goals, constraints, accepted decisions, active tasks, work progress, current state, change reasons, and unknowns in their mapped bilingual documents. Populate `CODE_ARCHITECTURE` only from inspected code or explicit confirmation; mark it not applicable when the project has no code. Summarize durable facts; never copy a raw transcript or secrets.
 10. Review the initializer's JSON report. Treat every `proposal` as a merge candidate. Do not replace the corresponding user file without explicit approval.
 11. Run the generated dashboard builder, then validate the complete result:
 
@@ -59,7 +59,9 @@ Create a portable project-management folder with English operational documents, 
 - Keep root `AGENTS.md` concise. Store detailed reading maps and maintenance policy under `project_management`.
 - Read only the documents selected by the task matrix in `00_START_HERE.en.md`, in addition to the mandatory root rules and entry document.
 - Read `CODE_ARCHITECTURE.en.md` for work that changes code entry points, execution flow, component responsibilities, dependencies, data flow, generated artifacts, or interface boundaries.
-- Update both language files when a durable fact, decision, task, constraint, version boundary, code architecture, domain rule, historical interpretation, future direction, reference, or archive status changes.
+- Keep `CURRENT_TASKS` forward-looking. Append completed or materially changed work to `WORK_PROGRESS`; record a focused `CHANGE_REASONS` entry when future work needs the reason, prior behavior, updated behavior, evidence impact, and validity boundary.
+- Keep history and inactive material outside normal reading. Load it only when the task needs past evidence, reuse, or restoration.
+- Update both language files when a durable fact, decision, task, work-progress entry, change reason, constraint, version boundary, code architecture, domain rule, historical interpretation, future direction, reference, or archive status changes.
 - Regenerate the dashboard after any managed Markdown or manifest change.
 - Never present an archived item, proposal, hypothesis, or unconfirmed path as current truth.
 

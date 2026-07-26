@@ -1,9 +1,12 @@
 {
   "groups": {
     "priority": { "en": "Read first", "zh": "优先阅读" },
+    "planning": { "en": "Goals and constraints", "zh": "目标与约束" },
+    "state": { "en": "Current state", "zh": "当前状态" },
+    "work": { "en": "Active work", "zh": "当前工作" },
     "domain": { "en": "Domain rules", "zh": "领域规则" },
     "reference": { "en": "Project reference", "zh": "项目参考" },
-    "protocol": { "en": "Protocol and archive", "zh": "维护规则与存档" }
+    "archive": { "en": "History and archive", "zh": "历史与存档" }
   },
   "documents": [
     {
@@ -49,7 +52,7 @@
     {
       "id": "goal.en",
       "pair": "goal",
-      "group": "priority",
+      "group": "planning",
       "path": "01_goal/PROJECT_GOAL.en.md",
       "lang": "en",
       "title": "Project Goal",
@@ -59,7 +62,7 @@
     {
       "id": "goal.zh",
       "pair": "goal",
-      "group": "priority",
+      "group": "planning",
       "path": "01_goal/PROJECT_GOAL.zh.md",
       "lang": "zh",
       "title": "项目目标",
@@ -69,7 +72,7 @@
     {
       "id": "constraints.en",
       "pair": "constraints",
-      "group": "priority",
+      "group": "planning",
       "path": "01_goal/PROJECT_CONSTRAINTS.en.md",
       "lang": "en",
       "title": "Project Constraints",
@@ -79,7 +82,7 @@
     {
       "id": "constraints.zh",
       "pair": "constraints",
-      "group": "priority",
+      "group": "planning",
       "path": "01_goal/PROJECT_CONSTRAINTS.zh.md",
       "lang": "zh",
       "title": "项目约束",
@@ -89,7 +92,7 @@
     {
       "id": "source.en",
       "pair": "source",
-      "group": "priority",
+      "group": "state",
       "path": "02_current_state/SOURCE_OF_TRUTH.en.md",
       "lang": "en",
       "title": "Current Valid Files",
@@ -99,7 +102,7 @@
     {
       "id": "source.zh",
       "pair": "source",
-      "group": "priority",
+      "group": "state",
       "path": "02_current_state/SOURCE_OF_TRUTH.zh.md",
       "lang": "zh",
       "title": "当前有效文件",
@@ -109,7 +112,7 @@
     {
       "id": "version.en",
       "pair": "version",
-      "group": "priority",
+      "group": "state",
       "path": "02_current_state/CURRENT_VERSION.en.md",
       "lang": "en",
       "title": "Current Version Notes",
@@ -119,7 +122,7 @@
     {
       "id": "version.zh",
       "pair": "version",
-      "group": "priority",
+      "group": "state",
       "path": "02_current_state/CURRENT_VERSION.zh.md",
       "lang": "zh",
       "title": "当前版本说明",
@@ -129,7 +132,7 @@
     {
       "id": "architecture.en",
       "pair": "architecture",
-      "group": "priority",
+      "group": "state",
       "path": "02_current_state/CODE_ARCHITECTURE.en.md",
       "lang": "en",
       "title": "Code Architecture",
@@ -139,7 +142,7 @@
     {
       "id": "architecture.zh",
       "pair": "architecture",
-      "group": "priority",
+      "group": "state",
       "path": "02_current_state/CODE_ARCHITECTURE.zh.md",
       "lang": "zh",
       "title": "代码架构",
@@ -149,7 +152,7 @@
     {
       "id": "tasks.en",
       "pair": "tasks",
-      "group": "priority",
+      "group": "work",
       "path": "03_active_work/CURRENT_TASKS.en.md",
       "lang": "en",
       "title": "Current Tasks",
@@ -159,12 +162,32 @@
     {
       "id": "tasks.zh",
       "pair": "tasks",
-      "group": "priority",
+      "group": "work",
       "path": "03_active_work/CURRENT_TASKS.zh.md",
       "lang": "zh",
       "title": "当前任务清单",
       "lead": "当前工作、负责人、状态、验收、阻塞与交接信息。",
       "policy": "任务被声明、完成、阻塞、恢复或改变范围时更新。"
+    },
+    {
+      "id": "work-progress.en",
+      "pair": "work-progress",
+      "group": "work",
+      "path": "03_active_work/WORK_PROGRESS.en.md",
+      "lang": "en",
+      "title": "Work Progress",
+      "lead": "Completed or materially changed work, evidence, outcomes, limits, and handoff paths.",
+      "policy": "Append after completed or materially changed work; archive obsolete detailed bodies when the active method or major version changes."
+    },
+    {
+      "id": "work-progress.zh",
+      "pair": "work-progress",
+      "group": "work",
+      "path": "03_active_work/WORK_PROGRESS.zh.md",
+      "lang": "zh",
+      "title": "工作进展",
+      "lead": "已完成或发生重要变化的工作、证据、结果、限制与交接路径。",
+      "policy": "工作完成或发生重要变化后追加；当前方法或主版本变化时存档已经失效的详细正文。"
     },
     {
       "id": "decisions.en",
@@ -187,9 +210,29 @@
       "policy": "长期选择被确认、退役或反转时更新。"
     },
     {
+      "id": "change-reasons.en",
+      "pair": "change-reasons",
+      "group": "reference",
+      "path": "04_decisions/CHANGE_REASONS.en.md",
+      "lang": "en",
+      "title": "Change Reasons",
+      "lead": "Focused rationale for behavior-changing repairs and other changes whose previous behavior and evidence impact must remain auditable.",
+      "policy": "Add an entry when a material behavior change needs a durable reason, prior behavior, updated behavior, and evidence-impact record."
+    },
+    {
+      "id": "change-reasons.zh",
+      "pair": "change-reasons",
+      "group": "reference",
+      "path": "04_decisions/CHANGE_REASONS.zh.md",
+      "lang": "zh",
+      "title": "变更理由",
+      "lead": "记录行为修复及其他重要变化的理由、原有表现、新表现与证据影响。",
+      "policy": "重要行为变化需要长期保留理由、原有表现、新表现与证据影响时新增记录。"
+    },
+    {
       "id": "history.en",
       "pair": "history",
-      "group": "reference",
+      "group": "archive",
       "path": "06_history/PROJECT_HISTORY.en.md",
       "lang": "en",
       "title": "Project History",
@@ -199,7 +242,7 @@
     {
       "id": "history.zh",
       "pair": "history",
-      "group": "reference",
+      "group": "archive",
       "path": "06_history/PROJECT_HISTORY.zh.md",
       "lang": "zh",
       "title": "项目历史",
@@ -249,7 +292,7 @@
     {
       "id": "archive.en",
       "pair": "archive",
-      "group": "protocol",
+      "group": "archive",
       "path": "99_archive/README.en.md",
       "lang": "en",
       "title": "Archive Guide",
@@ -259,7 +302,7 @@
     {
       "id": "archive.zh",
       "pair": "archive",
-      "group": "protocol",
+      "group": "archive",
       "path": "99_archive/README.zh.md",
       "lang": "zh",
       "title": "存档说明",

@@ -293,7 +293,7 @@ const html = String.raw`<!doctype html>
       border: 0;
     }
     .brand-copy { min-width: 0; flex: 1 1 auto; }
-    .brand-title { margin: 0; color: var(--ink); font-size: 17px; font-weight: 600; line-height: 23px; white-space: nowrap; }
+    .brand-title { margin: 0; color: var(--ink); font-size: 17px; font-weight: 600; line-height: 23px; white-space: normal; overflow-wrap: anywhere; }
     .brand-subtitle { margin: 2px 0 0; color: var(--muted); font-size: 12px; line-height: 18px; }
     .sidebar-header { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
     .search-region { padding: 10px 12px; border-bottom: 1px solid var(--line); }
@@ -796,7 +796,7 @@ const html = String.raw`<!doctype html>
         filePath: "File path",
         modified: "Updated",
         subtitle: "Project documents and working records",
-        groups: { priority: "Read first", domain: "Domain rules", reference: "Project reference", protocol: "Protocol and archive" },
+        groups: { priority: "Read first", planning: "Goals and constraints", state: "Current state", work: "Active work", domain: "Domain rules", reference: "Project reference", archive: "History and archive" },
       },
       zh: {
         homeLabel: "返回项目首页",
@@ -808,7 +808,7 @@ const html = String.raw`<!doctype html>
         filePath: "文件路径",
         modified: "更新时间",
         subtitle: "项目文档与工作记录",
-        groups: { priority: "优先阅读", domain: "领域规则", reference: "项目参考", protocol: "维护规则与存档" },
+        groups: { priority: "优先阅读", planning: "目标与约束", state: "当前状态", work: "当前工作", domain: "领域规则", reference: "项目参考", archive: "历史与存档" },
       },
     };
 
@@ -908,7 +908,11 @@ const html = String.raw`<!doctype html>
 
       GROUP_ORDER.forEach(function (group) {
         const docs = localizedDocuments().filter(function (doc) { return doc.group === group; });
-        if (!docs.length) return;
+        const matchingDocs = docs.filter(function (doc) {
+          const haystack = (doc.title + " " + doc.path + " " + doc.markdown).toLocaleLowerCase();
+          return !query || haystack.includes(query);
+        });
+        if (!matchingDocs.length) return;
         const section = document.createElement("section");
         section.className = "nav-group";
         const heading = document.createElement("h2");
@@ -917,13 +921,10 @@ const html = String.raw`<!doctype html>
         const list = document.createElement("div");
         list.className = "nav-list";
 
-        docs.forEach(function (doc) {
-          const haystack = (doc.title + " " + doc.path + " " + doc.markdown).toLocaleLowerCase();
-          const matches = !query || haystack.includes(query);
+        matchingDocs.forEach(function (doc) {
           const button = document.createElement("button");
           button.type = "button";
           button.className = "nav-item" + (doc.pair === state.pair ? " active" : "");
-          button.hidden = !matches;
           button.innerHTML = '<span class="nav-marker"></span><span></span>';
           button.lastElementChild.textContent = doc.title;
           button.addEventListener("click", function () { selectPair(doc.pair); });
@@ -933,9 +934,8 @@ const html = String.raw`<!doctype html>
           option.value = doc.pair;
           option.textContent = groupLabel(group) + " · " + doc.title;
           option.selected = doc.pair === state.pair;
-          option.hidden = !matches;
           documentSelect.appendChild(option);
-          if (matches) matchCount += 1;
+          matchCount += 1;
         });
 
         section.append(heading, list);
