@@ -7,6 +7,7 @@ const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const skillDirectory = path.dirname(scriptDirectory);
 const assetRoot = path.join(skillDirectory, "assets", "project-management");
 const supportedModules = new Set(["frontend", "backend", "research", "data", "deployment", "security"]);
+const supportedFeatures = new Set(["process-flow", "experiment-log", "artifact-registry"]);
 const moduleReadingRules = {
   frontend: {
     path: "05_domains\\frontend\\FRONTEND_REQUIREMENTS.en.md",
@@ -39,6 +40,43 @@ const moduleReadingRules = {
     zh: "修改身份、权限、密钥、隐私、威胁或合规行为前",
   },
 };
+const featureReadingRules = {
+  "process-flow": {
+    path: "02_current_state\\IMPLEMENTATION_FLOW.en.md",
+    en: "when ordered stages, timing, validation gates, handoffs, or recovery boundaries matter",
+    zh: "任务涉及阶段顺序、时序、验证关卡、交接或恢复边界时",
+  },
+  "experiment-log": {
+    path: "05_domains\\research\\EXPERIMENT_LOG.en.md",
+    en: "before planning, running, interpreting, or handing off a material experiment",
+    zh: "规划、运行、解释或交接重要实验前",
+  },
+  "artifact-registry": {
+    path: "09_evidence\\ARTIFACTS.en.md",
+    en: "before adding, replacing, reclassifying, archiving, restoring, or relying on a retained artifact",
+    zh: "新增、替换、重新分类、归档、恢复或依赖保留产物前",
+  },
+};
+const documentMetadataByPair = {
+  "agent-rules": { readWhen: ["every-project-task"], updateWhen: ["operating-rules-or-reading-map-change"] },
+  start: { readWhen: ["every-project-task"], updateWhen: ["evidence-order-reading-map-or-maintenance-protocol-change"] },
+  goal: { readWhen: ["scope-plan-or-direction-change"], updateWhen: ["durable-objective-or-success-criteria-change"] },
+  constraints: { readWhen: ["scope-plan-or-rule-change"], updateWhen: ["durable-constraint-change"] },
+  source: { readWhen: ["deliverable-behavior-or-authority-change"], updateWhen: ["authoritative-path-entry-configuration-or-artifact-change"] },
+  version: { readWhen: ["deliverable-behavior-or-authority-change"], updateWhen: ["deliverable-behavior-structure-interface-dependency-or-procedure-change"] },
+  architecture: { readWhen: ["code-structure-flow-dependency-dataflow-or-interface-change"], updateWhen: ["code-architecture-change"] },
+  "implementation-flow": { readWhen: ["ordered-process-or-handoff-change"], updateWhen: ["stage-timing-gate-handoff-or-recovery-change"] },
+  tasks: { readWhen: ["scope-plan-implementation-or-handoff-work"], updateWhen: ["task-status-scope-blocker-or-handoff-change"] },
+  "work-progress": { readWhen: ["scope-plan-implementation-validation-or-handoff-work"], updateWhen: ["material-non-experiment-work-completes-or-changes"] },
+  "experiment-log": { readWhen: ["experiment-plan-run-interpretation-or-handoff"], updateWhen: ["experiment-completes-or-changes-materially"] },
+  decisions: { readWhen: ["durable-choice-or-reversal-matters"], updateWhen: ["durable-choice-accepted-retired-or-reversed"] },
+  "change-reasons": { readWhen: ["material-behavior-change-or-scope-correction"], updateWhen: ["behavior-change-needs-auditable-rationale"] },
+  history: { readWhen: ["explicit-history-inspection-or-restoration"], updateWhen: ["event-changes-historical-interpretation"] },
+  future: { readWhen: ["new-direction-proposal"], updateWhen: ["future-direction-appears-changes-activates-or-retires"] },
+  references: { readWhen: ["retained-reference-use"], updateWhen: ["reference-provenance-relevance-or-status-change"] },
+  artifacts: { readWhen: ["retained-artifact-use-or-reclassification"], updateWhen: ["artifact-governance-or-interpretation-boundary-change"] },
+  archive: { readWhen: ["explicit-archive-inspection-restoration-or-transition"], updateWhen: ["archive-structure-status-retention-or-restoration-change"] },
+};
 const ignoredInventoryDirectories = new Set([
   ".git",
   ".hg",
@@ -62,6 +100,7 @@ Options:
   --date YYYY-MM-DD
   --management-dir <relative-path>
   --include <module[,module]>
+  --include-feature <feature[,feature]>
   --dry-run
   --help`);
 }
@@ -76,6 +115,7 @@ function parseArguments(values) {
     date: new Date().toISOString().slice(0, 10),
     managementDirectory: "project_management",
     modules: [],
+    features: [],
     dryRun: false,
     help: false,
   };
@@ -107,6 +147,13 @@ function parseArguments(values) {
       index += 1;
       continue;
     }
+    if (token === "--include-feature") {
+      const value = values[index + 1];
+      if (!value || value.startsWith("--")) throw new Error("--include-feature requires a feature name.");
+      options.features.push(...value.split(",").map((item) => item.trim()).filter(Boolean));
+      index += 1;
+      continue;
+    }
     const key = valueOptions.get(token);
     if (!key) throw new Error(`Unknown argument: ${token}`);
     const value = values[index + 1];
@@ -116,6 +163,7 @@ function parseArguments(values) {
   }
 
   options.modules = [...new Set(options.modules.map((item) => item.toLowerCase()))].sort();
+  options.features = [...new Set(options.features.map((item) => item.toLowerCase()))].sort();
   return options;
 }
 
@@ -220,6 +268,44 @@ function formatModuleRules(modules, managementDirectory, language) {
       ? `- Read \`${relative}\` ${rule.en}.`
       : `- ${rule.zh}，阅读 \`${relative}\`。`;
   }).join("\n");
+}
+
+function formatFeatureRules(features, managementDirectory, language) {
+  if (!features.length) {
+    return language === "en"
+      ? "- No optional project-context feature is active."
+      : "- 当前没有启用可选项目上下文功能。";
+  }
+  return features.map((featureName) => {
+    const rule = featureReadingRules[featureName];
+    const relative = `${managementDirectory.split(path.sep).join("\\")}\\${rule.path}`;
+    return language === "en"
+      ? `- Read \`${relative}\` ${rule.en}.`
+      : `- ${rule.zh}，阅读 \`${relative}\`。`;
+  }).join("\n");
+}
+
+function enrichDocumentMetadata(document) {
+  const pairMetadata = documentMetadataByPair[document.pair] || {
+    readWhen: ["when-task-routing-selects-this-document"],
+    updateWhen: ["when-its-durable-content-changes"],
+  };
+  const privateLookup = document.privateLookup ?? document.group === "archive";
+  let authority = document.authority;
+  if (!authority) {
+    if (privateLookup) authority = "private-lookup";
+    else if (document.lang === "zh") authority = "review";
+    else if (document.group === "reference" || document.group === "evidence") authority = "reference";
+    else authority = "operational";
+  }
+  return {
+    ...document,
+    lifecycle: document.lifecycle || "active",
+    authority,
+    readWhen: Array.isArray(document.readWhen) ? document.readWhen : pairMetadata.readWhen,
+    updateWhen: Array.isArray(document.updateWhen) ? document.updateWhen : pairMetadata.updateWhen,
+    privateLookup,
+  };
 }
 
 async function readJson(target) {
@@ -333,7 +419,15 @@ function mergeDocumentEntries(existing, desired) {
   const documents = Array.isArray(existing)
     ? existing.map((document) => {
       const managed = desiredById.get(document?.id);
-      return managed ? { ...document, group: managed.group } : document;
+      return managed ? {
+        ...document,
+        group: managed.group,
+        lifecycle: managed.lifecycle,
+        authority: managed.authority,
+        readWhen: managed.readWhen,
+        updateWhen: managed.updateWhen,
+        privateLookup: managed.privateLookup,
+      } : document;
     })
     : [];
   const ids = new Set(documents.map((document) => document && document.id).filter(Boolean));
@@ -344,6 +438,19 @@ function mergeDocumentEntries(existing, desired) {
     }
   }
   return documents;
+}
+
+function mergeRegistryEntries(existing, desired) {
+  const registries = Array.isArray(existing) ? [...existing] : [];
+  const indexes = new Map(registries.map((registry, index) => [registry?.id, index]).filter(([id]) => id));
+  for (const registry of desired) {
+    if (indexes.has(registry.id)) registries[indexes.get(registry.id)] = { ...registries[indexes.get(registry.id)], ...registry };
+    else {
+      indexes.set(registry.id, registries.length);
+      registries.push(registry);
+    }
+  }
+  return registries;
 }
 
 async function writeManifest(target, desired, report, dryRun, writeProtected) {
@@ -363,6 +470,7 @@ async function writeManifest(target, desired, report, dryRun, writeProtected) {
           defaultLanguage: current.defaultLanguage === "en" ? "en" : "zh",
           groups: { ...desired.groups, ...(current.groups || {}) },
           documents: mergeDocumentEntries(current.documents, desired.documents),
+          registries: mergeRegistryEntries(current.registries, desired.registries || []),
         };
         const nextText = `${JSON.stringify(merged, null, 2)}\n`;
         if (currentText.replace(/\r\n/g, "\n") === nextText) {
@@ -409,6 +517,15 @@ async function main() {
   for (const moduleName of options.modules) {
     if (!supportedModules.has(moduleName)) throw new Error(`Unsupported module: ${moduleName}`);
   }
+  for (const featureName of options.features) {
+    if (!supportedFeatures.has(featureName)) throw new Error(`Unsupported feature: ${featureName}`);
+    const featureManifest = await readJson(path.join(assetRoot, "features", featureName, "feature.json"));
+    for (const requiredModule of featureManifest.requiresModules || []) {
+      if (!options.modules.includes(requiredModule)) {
+        throw new Error(`Feature ${featureName} requires module: ${requiredModule}`);
+      }
+    }
+  }
 
   await prepareProjectRoot(options);
   options.projectName = normalizeInline(options.projectName || path.basename(options.project), "Project name");
@@ -421,6 +538,8 @@ async function main() {
   const projectRootFromState = path.relative(path.join(managementRoot, "02_current_state"), options.project) || ".";
   const moduleSummaryEn = options.modules.length ? options.modules.join(", ") : "None selected; add a module only when its domain becomes part of the project.";
   const moduleSummaryZh = options.modules.length ? options.modules.join("、") : "当前未选择；只有相关领域成为项目组成部分时才添加模块。";
+  const featureSummaryEn = options.features.length ? options.features.join(", ") : "None selected; add a feature only when it carries durable project information.";
+  const featureSummaryZh = options.features.length ? options.features.join("、") : "当前未选择；只有功能能够保存长期项目信息时才添加。";
   const replacements = {
     PROJECT_NAME: options.projectName,
     PROJECT_NAME_JSON: JSON.stringify(options.projectName),
@@ -437,6 +556,10 @@ async function main() {
     MODULES_ZH: moduleSummaryZh,
     MODULE_RULES_EN: formatModuleRules(options.modules, options.managementDirectory, "en"),
     MODULE_RULES_ZH: formatModuleRules(options.modules, options.managementDirectory, "zh"),
+    FEATURES_EN: featureSummaryEn,
+    FEATURES_ZH: featureSummaryZh,
+    FEATURE_RULES_EN: formatFeatureRules(options.features, options.managementDirectory, "en"),
+    FEATURE_RULES_ZH: formatFeatureRules(options.features, options.managementDirectory, "zh"),
     PROJECT_ROOT_FROM_STATE: projectRootFromState.split(path.sep).join("\\"),
   };
 
@@ -447,6 +570,7 @@ async function main() {
     project: options.project,
     managementDirectory: managementRoot,
     modules: options.modules,
+    features: options.features,
     inventory,
     created: [],
     unchanged: [],
@@ -458,6 +582,7 @@ async function main() {
 
   const baseManifest = await readJson(path.join(assetRoot, "core-manifest.json"));
   const documentEntries = [...baseManifest.documents];
+  const registryEntries = [];
   const templateResults = await materializeTemplates(
     path.join(assetRoot, "core", "templates"),
     options.project,
@@ -465,6 +590,13 @@ async function main() {
     replacements,
     writeProtected,
   );
+  const portableArchiverSource = path.join(skillDirectory, "scripts", "archive_project_management.mjs");
+  const portableArchiverTarget = path.join(managementRoot, "tools", "archive_project_management.mjs");
+  templateResults.push({
+    source: portableArchiverSource,
+    target: portableArchiverTarget,
+    result: await writeProtected(portableArchiverTarget, await fs.readFile(portableArchiverSource)),
+  });
 
   for (const moduleName of options.modules) {
     const moduleRoot = path.join(assetRoot, "modules", moduleName);
@@ -479,6 +611,24 @@ async function main() {
     ));
   }
 
+  for (const featureName of options.features) {
+    const featureRoot = path.join(assetRoot, "features", featureName);
+    const featureManifest = await readJson(path.join(featureRoot, "feature.json"));
+    documentEntries.push(...(featureManifest.documents || []));
+    registryEntries.push(...(featureManifest.registries || []));
+    templateResults.push(...await materializeTemplates(
+      path.join(featureRoot, "templates"),
+      options.project,
+      options.managementDirectory,
+      replacements,
+      writeProtected,
+    ));
+  }
+
+  for (let index = 0; index < documentEntries.length; index += 1) {
+    documentEntries[index] = enrichDocumentMetadata(documentEntries[index]);
+  }
+
   for (const document of documentEntries) {
     if (document.pair === "agent-rules") {
       document.path = path.posix.join(
@@ -489,7 +639,7 @@ async function main() {
   }
 
   const desiredManifest = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     generatedBy: "manage-project-context",
     projectName: options.projectName,
     managementDirectory: options.managementDirectory.split(path.sep).join("/"),
@@ -497,6 +647,7 @@ async function main() {
     defaultLanguage: "zh",
     groups: baseManifest.groups,
     documents: documentEntries,
+    registries: registryEntries,
   };
   const manifestPath = path.join(options.project, options.managementDirectory, "project-management.json");
   const manifestResult = await writeManifest(manifestPath, desiredManifest, report, options.dryRun, writeProtected);

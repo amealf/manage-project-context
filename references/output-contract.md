@@ -59,6 +59,7 @@ The default management directory is `project_management`. A new or existing proj
     │   ├── marked.umd.js
     │   └── MARKED_LICENSE.md
     ├── tools
+    │   ├── archive_project_management.mjs
     │   └── build_dashboard.mjs
     └── index.html
 ```
@@ -80,6 +81,18 @@ Approved modules appear under `05_domains` and are absent otherwise:
 
 The manifest lists only selected modules. Adding a module later must create its bilingual pair, merge its entries into an owned manifest, and regenerate the dashboard.
 
+## Optional features
+
+Optional features remain absent unless selected:
+
+| Feature | Output |
+| --- | --- |
+| `process-flow` | `02_current_state\IMPLEMENTATION_FLOW.en.md` and `.zh.md` |
+| `experiment-log` | `05_domains\research\EXPERIMENT_LOG.en.md` and `.zh.md`; requires `research` |
+| `artifact-registry` | `09_evidence\ARTIFACTS.en.md`, `.zh.md`, and `ARTIFACT_REGISTRY.json` |
+
+The artifact registry is declared under the manifest's `registries` array and is not treated as a bilingual Markdown document.
+
 ## Content invariants
 
 - Encode every generated text file as UTF-8 without corrupting Chinese text.
@@ -95,7 +108,20 @@ The manifest lists only selected modules. Adding a module later must create its 
 - Retain confirmed conclusions and useful rationale, not raw conversation transcripts. Exclude secrets and private personal data.
 - Let the latest explicit user correction supersede an older conversation summary while preserving material discrepancies with observed project behavior.
 - Keep proposals, archived material, and future ideas outside current-truth claims.
+- Classify material records and artifacts on independent lifecycle and evidence-authority axes. Existence alone does not grant decision authority.
+- Keep volatile counts and execution snapshots in dated logs or registries; retain only stable conclusions in durable goal, constraint, and current-state documents.
+- Use HTML `<strong>...</strong>` for bold text in generated and maintained Markdown. Markdown `**...**` strong syntax is prohibited outside inline code, fenced code, and literal glob/path examples.
 - Use an explicit `--date` plus stable inputs for reproducible generated Markdown.
+
+## Manifest contract
+
+Generated manifests use `schemaVersion: 2`. Every document entry includes `lifecycle`, `authority`, nonempty `readWhen` and `updateWhen` arrays, and `privateLookup`.
+
+Document authority values are `operational`, `review`, `reference`, and `private-lookup`. These describe the document's management role and do not replace record-level evidence authority.
+
+Owned-manifest migration updates generated document metadata while preserving user-added document entries and custom labels. Custom entries should use the same metadata; validation warns when older custom entries omit it.
+
+Optional machine registries are listed under `registries` with `id`, `kind`, `path`, and `schemaVersion`.
 
 ## Ownership and conflict handling
 
@@ -126,6 +152,7 @@ The generated dashboard must:
 - Load both English and Chinese files from the manifest.
 - Include `AGENTS.md` and `AGENTS.zh.md` in the first `Read first / 优先阅读` group.
 - Group documents by reading role: required entry, goals and constraints, current state, active work, conditional domain rules, project reference, and history/archive. Hide groups with no active documents.
+- Include the conditional evidence-and-artifacts group and show each document's lifecycle and management-authority badges.
 - Provide persistent language and light/dark theme controls.
 - Provide full-text document search, left document navigation, a readable Markdown body, and a floating in-page outline.
 - Work offline through relative assets and a vendored Markdown renderer.
@@ -151,7 +178,14 @@ Optional arguments:
 --date YYYY-MM-DD
 --management-dir <safe relative path>
 --include frontend|backend|research|data|deployment|security
+--include-feature process-flow|experiment-log|artifact-registry
 --dry-run
 ```
 
-Allow repeated or comma-separated `--include` values. Reject unknown modules, unsafe relative paths, invalid dates, and `new` mode on a non-empty root. Print JSON and use a nonzero exit code for invalid input or failed validation.
+Allow repeated or comma-separated module and feature values. Reject unknown values, unmet feature requirements, unsafe relative paths, invalid dates, and `new` mode on a non-empty root. Print JSON and use a nonzero exit code for invalid input or failed validation.
+
+## Archive package contract
+
+`scripts\archive_project_management.mjs` creates a new package under `99_archive` from explicitly named project-relative sources. It must reject unsafe sources and an existing destination, copy rather than delete the sources, preserve project-relative payload paths, and write bilingual notes plus `ARCHIVE_MANIFEST.json`.
+
+The manifest records status, date, reason, replacement, payload file and byte counts, per-file SHA-256 values, one inventory fingerprint, its exact contract, and retention guidance. Validation recomputes standard package closure.

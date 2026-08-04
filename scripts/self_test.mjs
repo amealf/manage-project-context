@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const initializer = path.join(scriptDirectory, "init_project_management.mjs");
 const validator = path.join(scriptDirectory, "validate_project_management.mjs");
+const archiver = path.join(scriptDirectory, "archive_project_management.mjs");
 
 function parseArguments(values) {
   const options = { outputRoot: "", date: "2026-07-16" };
@@ -93,8 +94,14 @@ async function main() {
     }
   }
   const newManifest = JSON.parse(await fs.readFile(path.join(newProject, "project_management", "project-management.json"), "utf8"));
-  for (const group of ["priority", "planning", "state", "work", "domain", "reference", "archive"]) {
+  for (const group of ["priority", "planning", "state", "work", "domain", "evidence", "reference", "archive"]) {
     if (!newManifest.groups[group]) throw new Error(`Expected Dashboard group is missing: ${group}.`);
+  }
+  if (newManifest.schemaVersion !== 2) throw new Error("Neutral project did not receive manifest schema version 2.");
+  for (const document of newManifest.documents) {
+    if (!document.lifecycle || !document.authority || !document.readWhen?.length || !document.updateWhen?.length || typeof document.privateLookup !== "boolean") {
+      throw new Error(`Generated document metadata is incomplete: ${document.id}.`);
+    }
   }
   const groupByPair = new Map(newManifest.documents.filter((entry) => entry.lang === "en").map((entry) => [entry.pair, entry.group]));
   for (const [pair, group] of [["goal", "planning"], ["architecture", "state"], ["work-progress", "work"], ["change-reasons", "reference"], ["history", "archive"]]) {
@@ -168,11 +175,70 @@ async function main() {
   }
   const migratedValidation = parseJsonOutput(await run(validator, ["--project", existingProject]), "classification migration validation");
 
+  const featureProject = path.join(options.outputRoot, "feature-project");
+  const featureInit = parseJsonOutput(await run(initializer, [
+    "--project", featureProject,
+    "--mode", "new",
+    "--project-name", "Evidence Lab",
+    "--goal-en", "Maintain a reproducible project with explicit process and evidence boundaries.",
+    "--goal-zh", "维护一个流程与证据边界明确、可复现的项目。",
+    "--include", "research",
+    "--include-feature", "process-flow,experiment-log,artifact-registry",
+    "--date", options.date,
+  ]), "feature-project initialization");
+  const featureManifestPath = path.join(featureProject, "project_management", "project-management.json");
+  const featureManifest = JSON.parse(await fs.readFile(featureManifestPath, "utf8"));
+  for (const pair of ["implementation-flow", "experiment-log", "artifacts"]) {
+    if (!featureManifest.documents.some((document) => document.pair === pair && document.lang === "en")) {
+      throw new Error(`Feature document pair is missing: ${pair}.`);
+    }
+  }
+  if (!featureManifest.registries?.some((registry) => registry.id === "artifact-registry")) {
+    throw new Error("Artifact registry declaration is missing.");
+  }
+  const featureValidation = parseJsonOutput(await run(validator, ["--project", featureProject]), "feature-project validation");
+
+  const archiveSource = path.join(featureProject, "project_management", "03_active_work", "WORK_PROGRESS.en.md");
+  const archiveSourceBefore = await fs.readFile(archiveSource);
+  const archiveResult = parseJsonOutput(await run(archiver, [
+    "--project", featureProject,
+    "--name", "initial_work_progress_20260716",
+    "--source", "project_management/03_active_work/WORK_PROGRESS.en.md",
+    "--reason-en", "Retain the initialized progress record before a method transition exercise.",
+    "--reason-zh", "在方法切换演练前保留初始化工作进展记录。",
+    "--active-period-en", "Initialization on 2026-07-16",
+    "--active-period-zh", "2026-07-16 初始化期间",
+    "--replacement", "Current project-management work progress",
+    "--date", options.date,
+  ]), "archive package creation");
+  if (!archiveSourceBefore.equals(await fs.readFile(archiveSource))) throw new Error("Archive creation modified its source file.");
+  const archivedValidation = parseJsonOutput(await run(validator, ["--project", featureProject]), "archive package validation");
+  const repeatedArchive = await run(archiver, [
+    "--project", featureProject,
+    "--name", "initial_work_progress_20260716",
+    "--source", "project_management/03_active_work/WORK_PROGRESS.en.md",
+    "--reason-en", "This destination must be rejected.",
+    "--reason-zh", "该目标目录必须被拒绝。",
+    "--date", options.date,
+  ]);
+  if (repeatedArchive.code === 0) throw new Error("Archive script replaced an existing destination.");
+
+  const missingResearch = await run(initializer, [
+    "--project", path.join(options.outputRoot, "invalid-feature-project"),
+    "--mode", "new",
+    "--include-feature", "experiment-log",
+    "--date", options.date,
+  ]);
+  if (missingResearch.code === 0 || !missingResearch.stderr.includes("requires module: research")) {
+    throw new Error("Experiment log did not enforce the research-module requirement.");
+  }
+
   console.log(JSON.stringify({
-    ok: newValidation.ok && existingValidation.ok && migratedValidation.ok,
+    ok: newValidation.ok && existingValidation.ok && migratedValidation.ok && featureValidation.ok && archivedValidation.ok,
     outputRoot: options.outputRoot,
     newProject: { initialization: newInit, validation: newValidation },
     existingProject: { initialization: existingInit, validation: existingValidation, migration: migrationInit, migratedValidation },
+    featureProject: { initialization: featureInit, validation: featureValidation, archive: archiveResult, archivedValidation },
   }, null, 2));
 }
 

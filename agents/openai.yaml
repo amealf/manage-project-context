@@ -1,4 +1,4 @@
 interface:
   display_name: "Project Context / 项目管理目录"
-  short_description: "Conversation-aware project memory / 会话驱动项目记忆"
-  default_prompt: "Use $manage-project-context to build or update bilingual project memory from the available conversation and real project files, without assuming unused domains. / 使用 $manage-project-context 根据当前可用聊天和真实项目文件建立或维护双语项目记忆，不假定项目使用无关领域。"
+  short_description: "Auditable project memory / 可审计双语项目记忆"
+  default_prompt: "Use $manage-project-context to build or update bilingual project memory, preserve existing files, and govern version, evidence, and archive boundaries from confirmed context. / 使用 $manage-project-context 根据已确认上下文建立或维护双语项目记忆，保留已有文件，并管理版本、证据与存档边界。"

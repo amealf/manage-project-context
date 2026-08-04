@@ -2,7 +2,7 @@
 
 <!-- generated-by: manage-project-context; review before merging into an existing user-owned file -->
 
-This file is the concise operating protocol for agents working on **{{PROJECT_NAME}}**. Detailed context and maintenance rules live under `{{MANAGEMENT_DIR}}`.
+This file is the concise operating protocol for agents working on <strong>{{PROJECT_NAME}}</strong>. Detailed context and maintenance rules live under `{{MANAGEMENT_DIR}}`.
 
 ## Required reading
 
@@ -15,6 +15,7 @@ This file is the concise operating protocol for agents working on **{{PROJECT_NA
 - Scope or planning: read `01_goal\PROJECT_GOAL.en.md`, `01_goal\PROJECT_CONSTRAINTS.en.md`, `03_active_work\CURRENT_TASKS.en.md`, and `03_active_work\WORK_PROGRESS.en.md`.
 - Deliverable or current-behavior changes: also read `02_current_state\SOURCE_OF_TRUTH.en.md`, `02_current_state\CURRENT_VERSION.en.md`, and relevant `04_decisions\DECISIONS.en.md` entries.
 - Behavior-changing repairs or changes whose rationale affects future work: also read `04_decisions\CHANGE_REASONS.en.md`.
+- Active version, method, contract, or authority transitions: follow the transition matrix in `00_START_HERE.en.md`, classify affected evidence, and read the archive guide.
 - Code entry point, execution flow, component responsibility, dependency, data flow, or interface-boundary changes: also read `02_current_state\CODE_ARCHITECTURE.en.md` and `03_active_work\WORK_PROGRESS.en.md`.
 - New direction: read `07_future\NEXT_DIRECTIONS.en.md` plus current goal, constraints, tasks, and work progress.
 - Historical or inactive work: read `06_history\PROJECT_HISTORY.en.md` and the relevant `99_archive` note only when the task needs past evidence, reuse, or restoration.
@@ -26,6 +27,7 @@ Paths in this section are relative to `{{MANAGEMENT_DIR}}`.
 
 - At the start of project-changing work, review the conversation and delegated context available in the current task. Do not claim access to unseen chats.
 - Compare the latest confirmed user statements with this file, `00_START_HERE.en.md`, and the task-selected English documents. A newer explicit correction supersedes an older summary.
+- When an instruction touches an established rule, classify it as a task exception, durable rule change, new variant, or scope correction before changing related behavior.
 - When project work establishes an accepted durable change, update the mapped English document and Chinese mirror before finishing the task, even when the user does not separately request documentation maintenance.
 - Append completed or materially changed work to `03_active_work\WORK_PROGRESS.en.md` and its Chinese mirror. When a major delivery version or working method changes, archive obsolete detailed progress and leave a concise restoration pointer.
 - Do not modify files for explanation-only questions, hypotheticals, or unaccepted ideas.
@@ -35,18 +37,25 @@ Paths in this section are relative to `{{MANAGEMENT_DIR}}`.
 
 {{MODULE_RULES_EN}}
 
+## Active project-context features
+
+{{FEATURE_RULES_EN}}
+
 ## Working rules
 
 - Answer questions without changing files unless the user requests a change.
 - Treat the project's current real files, behavior, and produced artifacts as execution evidence. Use management documents to explain intent, status, and validity boundaries.
 - Keep unknown facts marked as unconfirmed. Do not turn a proposal, future direction, or archived item into current truth.
+- Classify material records and artifacts by both lifecycle and evidence authority. Existence alone does not grant current decision authority.
 - Preserve existing project files. Review `*.project-management.proposed*` siblings before any merge.
 - Keep English and Chinese management documents aligned when either changes.
+- Use HTML `<strong>...</strong>` for bold text in managed Markdown. Do not use Markdown `**...**`; inline code, fenced code, and glob paths keep their literal asterisks.
 
 ## After changes
 
 - Classify accepted conversation changes with the maintenance-trigger table in `00_START_HERE.en.md`.
 - Update the document named by `00_START_HERE.en.md` for the change type.
 - Update `WORK_PROGRESS` after completed or materially changed work, and `CHANGE_REASONS` when a behavior change needs durable rationale.
+- When active authority changes, preserve superseded detail in a recoverable archive package, state evidence impact, and leave replacement and restoration pointers.
 - Run `node "{{MANAGEMENT_DIR}}\tools\build_dashboard.mjs"` after changing managed Markdown or the manifest.
 - Verify the generated dashboard when a change affects its layout or interaction.

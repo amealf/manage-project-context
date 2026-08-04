@@ -1,0 +1,25 @@
+{
+  "requiresModules": ["research"],
+  "documents": [
+    {
+      "id": "experiment-log.en",
+      "pair": "experiment-log",
+      "group": "work",
+      "path": "05_domains/research/EXPERIMENT_LOG.en.md",
+      "lang": "en",
+      "title": "Experiment Log",
+      "lead": "Dated experiments with exact identities, execution evidence, results, failures, limits, and decisions.",
+      "policy": "Append every completed or materially changed experiment; archive superseded detail when the active method identity changes."
+    },
+    {
+      "id": "experiment-log.zh",
+      "pair": "experiment-log",
+      "group": "work",
+      "path": "05_domains/research/EXPERIMENT_LOG.zh.md",
+      "lang": "zh",
+      "title": "实验日志",
+      "lead": "按日期记录实验身份、执行证据、结果、失败、边界与决定。",
+      "policy": "每项已完成或发生重要变化的实验都要追加；当前方法身份变化时归档已失效的详细内容。"
+    }
+  ]
+}

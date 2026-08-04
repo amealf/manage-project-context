@@ -6,9 +6,10 @@
 2. Conversation intake
 3. Inspection and mode selection
 4. Optional module evidence
-5. Reading rules
-6. Chat-driven maintenance
-7. Initialization and review
+5. Optional feature evidence
+6. Reading rules
+7. Chat-driven maintenance
+8. Initialization and review
 
 ## Operating examples
 
@@ -60,6 +61,16 @@ Add an optional module only when the user confirms it or project artifacts estab
 
 When evidence is ambiguous, omit the module and mention it as a candidate. A missing optional module is safer than a misleading source of truth.
 
+## Optional feature evidence
+
+Read [optional-features.md](optional-features.md) before adding a feature. Features are independent from domains except `experiment-log`, which requires the `research` module.
+
+- Add `process-flow` only when ordered stages, timing, validation gates, handoffs, or recovery boundaries form a durable project contract.
+- Add `experiment-log` only when a confirmed research project needs experiments separated from implementation and delivery work.
+- Add `artifact-registry` only when retained outputs need stable identity, provenance, lifecycle, authority, fingerprints, replacements, or validity boundaries.
+
+Omit all features for a small or still-unknown project.
+
 ## Reading rules
 
 Always read:
@@ -76,8 +87,12 @@ Read by task:
 | Define scope or plan | `PROJECT_GOAL`, `PROJECT_CONSTRAINTS`, `CURRENT_TASKS`, `WORK_PROGRESS` |
 | Change a deliverable or current behavior | Goal, constraints, source of truth, current version, current tasks, work progress, relevant decisions |
 | Repair or materially change behavior | Current version, work progress, change reasons, relevant decisions |
+| Change active version, method, contract, or authority | Follow `state-transition-protocol.md`; read source of truth, current version, architecture or process flow, tasks, progress, decisions, change reasons, affected domains, references, and archive guide |
 | Change code structure, execution flow, components, dependencies, data flow, or interface boundaries | Source of truth, current version, code architecture, current tasks, work progress, relevant decisions |
 | Change a confirmed domain | The corresponding optional module plus current state, work progress, and decisions |
+| Change an ordered process | Optional implementation flow plus architecture, current version, tasks, and work progress |
+| Plan, run, interpret, or hand off an experiment | Research constraints and optional experiment log; add data requirements when data identity matters |
+| Add, replace, reclassify, archive, restore, or rely on a retained artifact | Optional artifact-governance guide and JSON registry plus the current-state document that owns the artifact |
 | Propose a new direction | Current goal, constraints, tasks, work progress, decisions, next directions |
 | Inspect, reuse, or restore historical work | Project history, archive guide, and the archived item's note |
 
@@ -96,26 +111,31 @@ Update both language files when the named event occurs:
 | Active entry point, configuration, branch, artifact, or authoritative path changes | `SOURCE_OF_TRUTH` |
 | A deliverable, current behavior, project structure, interface, dependency, or operating procedure changes | `CURRENT_VERSION` |
 | A code entry point, component responsibility, dependency or call relationship, data flow, generated artifact, or interface boundary changes | `CODE_ARCHITECTURE` |
+| An ordered stage, timing contract, validation gate, handoff, failure boundary, recovery point, or process identity changes | Optional `IMPLEMENTATION_FLOW` |
 | A task is declared, completed, blocked, resumed, or changes scope | `CURRENT_TASKS` |
 | Work completes or changes materially enough to affect handoff, review, or current project understanding | `WORK_PROGRESS` |
+| An experiment completes or changes materially | Optional `EXPERIMENT_LOG` |
 | A material behavior change needs durable rationale and an evidence-impact boundary | `CHANGE_REASONS` |
 | A durable choice is accepted, retired, or reversed | `DECISIONS` |
 | An event changes the interpretation of past work | `PROJECT_HISTORY` |
 | A plausible but uncommitted direction appears or is retired | `NEXT_DIRECTIONS` |
 | A retained source or its provenance changes | `08_references\README` |
+| A retained artifact is added, replaced, reclassified, archived, restored, or loses decision authority | Optional `09_evidence\ARTIFACT_REGISTRY.json` |
 | Material becomes inactive or is restored | `99_archive\README` and the item's archive note |
 | A confirmed domain rule changes | That domain's optional document |
 | Reading order or maintenance policy changes | Root agent files and `00_START_HERE` |
 
 Regenerate `project_management\index.html` after any managed Markdown or manifest change.
 
-Keep history and inactive material outside normal reading. When a major delivery version or working method changes and older detail would mislead current work, archive the superseded `WORK_PROGRESS` body in a dated folder, preserve it, and leave a concise restoration pointer on the active page.
+Keep history and inactive material outside normal reading. Keep volatile counts and execution snapshots in dated logs or registries rather than copying them across durable documents. When a major delivery version or working method changes and older detail would mislead current work, follow [state-transition-protocol.md](state-transition-protocol.md), create a recoverable archive package, and leave concise replacement and restoration pointers on the active page.
 
 ## Initialization and review
 
-Run `scripts\init_project_management.mjs` with an explicit absolute project path and mode. Add one or more `--include` arguments only for confirmed modules. The command prints a machine-readable report containing created, unchanged, managed-updated, and proposed paths.
+Run `scripts\init_project_management.mjs` with an explicit absolute project path and mode. Add one or more `--include` arguments only for confirmed modules and `--include-feature` arguments only for justified features. The command prints a machine-readable report containing created, unchanged, managed-updated, and proposed paths.
 
 After generation, replace generic unknown entries in files created by this run with confirmed intake facts. For protected conflicts, hydrate only the proposal sibling. Update the matching English and Chinese documents together; keep unavailable facts unconfirmed.
+
+Write bold text as HTML `<strong>...</strong>` in every managed Markdown document. Do not use Markdown `**...**`; leave literal asterisks unchanged inside inline code, fenced code, and glob paths.
 
 Review every proposal before merging. A proposal is not current truth and must not be added to the dashboard manifest as an active document until approved.
 

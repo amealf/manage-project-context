@@ -2,17 +2,18 @@
 
 ## Purpose
 
-This folder is the shared working memory for **{{PROJECT_NAME}}**. It records current intent, constraints, valid files, version state, active work, decisions, history, future directions, references, and archive boundaries. It does not duplicate large project files or raw source material.
+This folder is the shared working memory for <strong>{{PROJECT_NAME}}</strong>. It records current intent, constraints, valid files, version state, active work, decisions, history, future directions, references, and archive boundaries. It does not duplicate large project files or raw source material.
 
-The folder was initialized for a **{{MODE_EN}}** on {{DATE}}.
+The folder was initialized for a <strong>{{MODE_EN}}</strong> on {{DATE}}.
 
 ## Current orientation
 
-- **Durable goal:** {{GOAL_EN}}
-- **Optional domain modules:** {{MODULES_EN}}
-- **Operational language:** English.
-- **Review mirror:** Chinese.
-- **Unknown facts:** remain unconfirmed until supported by the user or project evidence.
+- <strong>Durable goal:</strong> {{GOAL_EN}}
+- <strong>Optional domain modules:</strong> {{MODULES_EN}}
+- <strong>Optional project-context features:</strong> {{FEATURES_EN}}
+- <strong>Operational language:</strong> English.
+- <strong>Review mirror:</strong> Chinese.
+- <strong>Unknown facts:</strong> remain unconfirmed until supported by the user or project evidence.
 
 The management dashboard is an offline document reader. Its use of HTML does not imply that this project contains or needs a frontend.
 
@@ -28,6 +29,15 @@ Use the highest applicable source:
 
 When sources disagree, record the discrepancy. Do not silently choose the more convenient source.
 
+## Lifecycle and evidence authority
+
+Classify material records and artifacts on two independent axes:
+
+- <strong>Lifecycle:</strong> `active`, `proposed`, `historical`, `retired`, or `unconfirmed`.
+- <strong>Evidence authority:</strong> `authoritative`, `descriptive`, `selection-only`, `reference-only`, or `invalid-for-decisions`.
+
+An existing file or valid artifact does not automatically define current behavior. State its validity boundary and replacement when one exists. Manifest-level lifecycle and authority describe the document's management role; a more specific record-level classification controls when the document contains mixed material.
+
 ## Conversation intake and ongoing maintenance
 
 Before initialization or project-changing work, review the conversation and delegated context available in the current task. Extract confirmed goals, constraints, decisions, tasks, current state, domains, corrections, and unknowns. Do not claim access to conversation that is not available.
@@ -35,6 +45,8 @@ Before initialization or project-changing work, review the conversation and dele
 For a new project, use those confirmed facts to populate the neutral management scaffold. Build a project implementation scaffold only when the user requests it and the available conversation establishes enough project shape. For an existing project, reconcile the intake with real project evidence and keep every user-owned file protected.
 
 During later work, an accepted durable change in the conversation triggers the matching document update before the task ends. Explanation-only questions, hypotheticals, and unaccepted ideas do not change files. Store conclusions and useful rationale rather than raw transcripts, secrets, or private personal data.
+
+When a new instruction touches an established rule, classify it as a one-task exception, durable rule change, new variant, or scope correction before changing related behavior. Preserve existing artifacts unless a declared regeneration is required, and record any change to their lifecycle, authority, or validity boundary.
 
 ## Default reading order
 
@@ -59,6 +71,7 @@ Load other documents only when the task requires them.
 | Change scope or plan | Goal, constraints, current tasks, and work progress. |
 | Change a deliverable or current behavior | Goal, constraints, source of truth, current version, current tasks, work progress, and relevant decisions. |
 | Repair or materially change behavior | Current version, work progress, change reasons, and relevant decisions. |
+| Change the active version, method, contract, or authority | Goal and constraints when affected, source of truth, current version, architecture or process flow, tasks, progress, decisions, change reasons, affected domain records, references, and archive guide. |
 | Change code structure, execution flow, components, dependencies, data flow, or interface boundaries | Source of truth, current version, code architecture, current tasks, work progress, and relevant decisions. |
 | Change a confirmed domain | The matching active module listed below, plus current state, work progress, and decisions. |
 | Propose a direction | Current goal, constraints, tasks, work progress, decisions, and next directions. |
@@ -69,6 +82,10 @@ Load other documents only when the task requires them.
 
 {{MODULE_RULES_EN}}
 
+### Active project-context feature rules
+
+{{FEATURE_RULES_EN}}
+
 ## Document maintenance triggers
 
 | Document | Update trigger |
@@ -78,13 +95,16 @@ Load other documents only when the task requires them.
 | `SOURCE_OF_TRUTH` | An authoritative path, entry point, branch, configuration, or artifact changes. |
 | `CURRENT_VERSION` | A deliverable, current behavior, project structure, interface, dependency, or operating procedure changes. |
 | `CODE_ARCHITECTURE` | A code entry point, component responsibility, dependency or call relationship, data flow, generated artifact, or interface boundary changes. Mark it not applicable when the project has no code. |
+| `IMPLEMENTATION_FLOW` when active | An ordered stage, timing contract, validation gate, handoff, failure boundary, recovery point, or process identity changes. |
 | `CURRENT_TASKS` | A task is declared, completed, blocked, resumed, or changes scope. |
 | `WORK_PROGRESS` | Work completes or changes materially enough to affect handoff, review, or the current understanding of the project. |
+| `EXPERIMENT_LOG` when active | Every completed or materially changed experiment; archive superseded detail when the active method identity changes. |
 | `CHANGE_REASONS` | A material behavior change needs a durable reason, prior behavior, updated behavior, evidence impact, and validity boundary. |
 | `DECISIONS` | A durable choice is accepted, retired, or reversed. |
 | `PROJECT_HISTORY` | An event changes how past or current work should be understood. |
 | `NEXT_DIRECTIONS` | A plausible direction appears, changes, becomes active, or is retired. |
 | `08_references\README` | A retained source or its provenance, relevance, or review status changes. |
+| `09_evidence\ARTIFACT_REGISTRY.json` when active | A retained artifact is added, replaced, reclassified, archived, restored, or loses decision authority. |
 | `99_archive\README` | Material becomes inactive, archive policy changes, or an item is restored. |
 | Active domain document | A durable rule in that confirmed domain changes. |
 | Root agent files and this entry | The reading order or maintenance protocol changes. |
@@ -99,7 +119,7 @@ node "{{MANAGEMENT_DIR}}\tools\build_dashboard.mjs"
 
 The Dashboard separates current guidance and work from project history and inactive material. Do not load history or archive documents during normal work unless the task needs past evidence, reuse, or restoration.
 
-When a major delivery version or working method changes and prior detailed progress would mislead current work, move the superseded body into a dated folder under `99_archive`, keep a concise restoration pointer in `WORK_PROGRESS`, and preserve the archived material.
+When a major delivery version or working method changes and prior detailed progress would mislead current work, copy the superseded material into a dated or stable archive package under `99_archive`, keep a concise restoration pointer in the active record, and preserve the source unless a separate approved action changes it. A standard package contains bilingual archive notes and `ARCHIVE_MANIFEST.json` with payload closure and an inventory fingerprint.
 
 ## Initialization inventory
 
@@ -113,5 +133,8 @@ Detection is not authority. Confirm current entry points and artifacts in `02_cu
 
 - Keep documents concise and factual.
 - Separate current, retired, proposed, and unknown states.
+- Separate lifecycle from evidence authority; retained material may exist without current decision authority.
+- Keep volatile counts and execution snapshots in dated logs or registries, not repeated across durable files.
 - Link to real paths instead of copying large outputs.
 - Record why a fact is believed and when it stops being valid.
+- Use HTML `<strong>...</strong>` for bold text. Do not author Markdown `**...**`; inline code, fenced code, and glob paths retain literal asterisks.

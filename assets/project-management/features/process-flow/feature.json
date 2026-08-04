@@ -1,0 +1,24 @@
+{
+  "documents": [
+    {
+      "id": "implementation-flow.en",
+      "pair": "implementation-flow",
+      "group": "state",
+      "path": "02_current_state/IMPLEMENTATION_FLOW.en.md",
+      "lang": "en",
+      "title": "Implementation Flow",
+      "lead": "Ordered stages, timing rules, validation gates, artifact handoffs, and recovery boundaries.",
+      "policy": "Update when the active stage order, timing contract, validation gate, handoff, or recovery boundary changes."
+    },
+    {
+      "id": "implementation-flow.zh",
+      "pair": "implementation-flow",
+      "group": "state",
+      "path": "02_current_state/IMPLEMENTATION_FLOW.zh.md",
+      "lang": "zh",
+      "title": "实现流程",
+      "lead": "记录阶段顺序、时序规则、验证关卡、产物交接与恢复边界。",
+      "policy": "当前阶段顺序、时序合同、验证关卡、交接或恢复边界变化时更新。"
+    }
+  ]
+}

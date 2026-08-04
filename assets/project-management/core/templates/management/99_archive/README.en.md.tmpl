@@ -7,11 +7,13 @@ Retain inactive material for traceability without confusing it with current trut
 ## Rules
 
 - Give each archived item a dated or stable descriptive folder.
-- Add an archive note with the original purpose, active period, retirement reason, replacement when one exists, and paths to retained evidence.
+- Add bilingual archive notes with the original role, active period, retirement reason, current replacement, retained evidence, validity boundary, and restoration conditions.
+- Add `ARCHIVE_MANIFEST.json` with payload file and byte counts, an inventory fingerprint, and the exact fingerprint contract when the archive contains retained files.
 - Keep archived material out of current authority tables and active task claims.
 - Read an item's archive note before reusing it.
 - Restore material only through a recorded decision and an updated validity boundary.
 - Do not permanently delete files as part of routine project-context maintenance.
+- Prefer `..\tools\archive_project_management.mjs` for reproducible snapshots of explicitly named in-project sources. It copies sources and rejects an existing destination.
 
 ## Archive register
 

@@ -1,0 +1,32 @@
+{
+  "documents": [
+    {
+      "id": "artifacts.en",
+      "pair": "artifacts",
+      "group": "evidence",
+      "path": "09_evidence/ARTIFACTS.en.md",
+      "lang": "en",
+      "title": "Artifact Governance",
+      "lead": "Rules for stable artifact identities, provenance, lifecycle, authority, fingerprints, replacements, and validity boundaries.",
+      "policy": "Update when artifact-governance rules change; update the JSON registry whenever a retained artifact is added or reclassified."
+    },
+    {
+      "id": "artifacts.zh",
+      "pair": "artifacts",
+      "group": "evidence",
+      "path": "09_evidence/ARTIFACTS.zh.md",
+      "lang": "zh",
+      "title": "产物治理",
+      "lead": "规定稳定产物身份、来源、生命周期、权威、指纹、替代物与有效边界。",
+      "policy": "产物治理规则变化时更新；保留产物新增或重新分类时更新 JSON 登记表。"
+    }
+  ],
+  "registries": [
+    {
+      "id": "artifact-registry",
+      "kind": "artifacts",
+      "path": "09_evidence/ARTIFACT_REGISTRY.json",
+      "schemaVersion": 1
+    }
+  ]
+}

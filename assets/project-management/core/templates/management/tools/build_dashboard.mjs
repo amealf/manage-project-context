@@ -446,6 +446,22 @@ const html = String.raw`<!doctype html>
       left: var(--header-visual-offset);
     }
     .eyebrow { margin: 0 0 12px; color: var(--muted); font-size: 12px; font-weight: 700; line-height: 18px; }
+    .document-status { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
+    .document-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      background: var(--surface);
+      color: var(--body);
+      font-size: 11px;
+      font-weight: 650;
+      line-height: 16px;
+    }
+    .document-badge[data-kind="lifecycle"] { border-color: color-mix(in srgb, var(--primary) 38%, var(--line)); color: var(--primary-dark); }
+    .document-badge[data-kind="authority"][data-value="private-lookup"] { border-color: var(--line-strong); color: var(--muted); }
     .document-header-row { display: block; }
     .document-title { margin: 0; color: var(--ink); font-size: var(--page-title-size); font-weight: 700; line-height: var(--page-title-line); letter-spacing: 0; text-wrap: balance; }
     .document-lead { max-width: 620px; margin: 10px 0 0; color: var(--body); font-size: 14px; font-weight: 400; line-height: 21px; }
@@ -751,6 +767,10 @@ const html = String.raw`<!doctype html>
       <main class="main">
       <header class="document-header">
         <div class="eyebrow" id="document-group"></div>
+        <div class="document-status" id="document-status">
+          <span class="document-badge" id="document-lifecycle" data-kind="lifecycle"></span>
+          <span class="document-badge" id="document-authority" data-kind="authority"></span>
+        </div>
         <div class="document-header-row">
           <h1 class="document-title" id="document-title"></h1>
           <p class="document-lead" id="document-lead"></p>
@@ -793,10 +813,14 @@ const html = String.raw`<!doctype html>
         languageToggle: "Switch to Chinese",
         empty: "No matching documents.",
         updatePolicy: "Update policy",
+        lifecycle: "Lifecycle",
+        authority: "Authority",
         filePath: "File path",
         modified: "Updated",
         subtitle: "Project documents and working records",
-        groups: { priority: "Read first", planning: "Goals and constraints", state: "Current state", work: "Active work", domain: "Domain rules", reference: "Project reference", archive: "History and archive" },
+        groups: { priority: "Read first", planning: "Goals and constraints", state: "Current state", work: "Active work", domain: "Domain rules", evidence: "Evidence and artifacts", reference: "Project reference", archive: "History and archive" },
+        lifecycleValues: { active: "Active", proposed: "Proposed", historical: "Historical", retired: "Retired", unconfirmed: "Unconfirmed" },
+        authorityValues: { operational: "Operational source", review: "Review mirror", reference: "Reference", "private-lookup": "Private lookup" },
       },
       zh: {
         homeLabel: "返回项目首页",
@@ -805,10 +829,14 @@ const html = String.raw`<!doctype html>
         languageToggle: "切换到英文",
         empty: "没有匹配的文档。",
         updatePolicy: "更新策略",
+        lifecycle: "生命周期",
+        authority: "管理权威",
         filePath: "文件路径",
         modified: "更新时间",
         subtitle: "项目文档与工作记录",
-        groups: { priority: "优先阅读", planning: "目标与约束", state: "当前状态", work: "当前工作", domain: "领域规则", reference: "项目参考", archive: "历史与存档" },
+        groups: { priority: "优先阅读", planning: "目标与约束", state: "当前状态", work: "当前工作", domain: "领域规则", evidence: "证据与产物", reference: "项目参考", archive: "历史与存档" },
+        lifecycleValues: { active: "当前", proposed: "提案", historical: "历史", retired: "已退役", unconfirmed: "待确认" },
+        authorityValues: { operational: "执行来源", review: "审阅镜像", reference: "参考材料", "private-lookup": "私人查阅" },
       },
     };
 
@@ -971,6 +999,14 @@ const html = String.raw`<!doctype html>
       search.setAttribute("aria-label", copy.search);
       document.getElementById("nav-empty").textContent = copy.empty;
       document.getElementById("document-group").textContent = groupLabel(doc.group);
+      const lifecycle = doc.lifecycle || "unconfirmed";
+      const authority = doc.authority || (doc.lang === "zh" ? "review" : "reference");
+      const lifecycleBadge = document.getElementById("document-lifecycle");
+      const authorityBadge = document.getElementById("document-authority");
+      lifecycleBadge.dataset.value = lifecycle;
+      lifecycleBadge.textContent = copy.lifecycle + " · " + (copy.lifecycleValues[lifecycle] || lifecycle);
+      authorityBadge.dataset.value = authority;
+      authorityBadge.textContent = copy.authority + " · " + (copy.authorityValues[authority] || authority);
       document.getElementById("document-title").textContent = doc.title;
       document.getElementById("document-lead").textContent = doc.lead || doc.title;
       document.getElementById("document-policy-label").textContent = copy.updatePolicy;

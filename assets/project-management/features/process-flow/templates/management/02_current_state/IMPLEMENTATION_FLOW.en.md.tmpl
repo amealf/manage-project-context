@@ -1,0 +1,42 @@
+# Implementation Flow
+
+## Purpose
+
+Record the ordered process for <strong>{{PROJECT_NAME}}</strong> when stage order, timing, validation gates, artifact handoffs, failure boundaries, or recovery points form part of the project contract.
+
+Keep component responsibilities, dependencies, and call relationships in `CODE_ARCHITECTURE.en.md`. Remove this optional document if it only repeats that file.
+
+## Active identity
+
+- <strong>Process, version, or method identity:</strong> Unconfirmed during initialization.
+- <strong>Lifecycle:</strong> `unconfirmed` until supported by user confirmation or project evidence.
+- <strong>Evidence authority:</strong> `reference-only` until the active identity and validity boundary are confirmed.
+- <strong>Validity boundary:</strong> Confirm the inputs, outputs, and effective version before relying on this flow.
+
+## End-to-end flow
+
+```text
+confirmed input
+  -> stage or transformation
+       -> validation gate
+       -> retained artifact
+  -> next stage
+       -> handoff or recovery point
+  -> confirmed output
+```
+
+Replace the generic flow only with inspected behavior or explicit user confirmation.
+
+## Stage contracts
+
+| Stage | Inputs | Responsibility | Outputs | Validation gate | Failure or recovery boundary |
+| --- | --- | --- | --- | --- | --- |
+| Unconfirmed | Unconfirmed | Inspect the real project before documenting this stage. | Unconfirmed | Unconfirmed | Unconfirmed |
+
+## Artifact and interface handoffs
+
+Record which stage owns each retained artifact or interface, how identity is preserved, and what downstream work may rely on it.
+
+## Maintenance
+
+Update when the active stage order, timing contract, validation gate, artifact handoff, failure boundary, recovery point, or process identity changes. Update `CODE_ARCHITECTURE`, `CURRENT_VERSION`, `SOURCE_OF_TRUTH`, and the artifact registry as well when the same change affects them.

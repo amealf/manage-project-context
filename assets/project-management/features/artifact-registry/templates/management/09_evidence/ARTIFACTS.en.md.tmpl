@@ -1,0 +1,28 @@
+# Artifact Governance
+
+## Purpose
+
+Use `ARTIFACT_REGISTRY.json` as the machine-readable inventory of retained artifacts for <strong>{{PROJECT_NAME}}</strong>. This bilingual guide records governance rules and notable interpretation boundaries; it does not duplicate every registry item.
+
+## Required classification
+
+Every material item records both:
+
+- <strong>Lifecycle:</strong> `active`, `proposed`, `historical`, `retired`, or `unconfirmed`.
+- <strong>Evidence authority:</strong> `authoritative`, `descriptive`, `selection-only`, `reference-only`, or `invalid-for-decisions`.
+
+Existence, a valid path, or a matching hash does not grant decision authority. State the item's validity boundary and replacement when one exists.
+
+## Registry fields
+
+Use a stable `id`, `kind`, explicit locator, lifecycle, authority, provenance, contract or version identity when applicable, fingerprint and fingerprint contract when reproducibility matters, creation time, replacement, and validity boundary.
+
+Never invent hashes, owners, versions, or provenance. Omit unknown optional values or classify the item as unconfirmed.
+
+## Notable boundaries
+
+No project-specific artifact is confirmed during initialization.
+
+## Maintenance
+
+Update the JSON registry when a retained artifact is added, replaced, reclassified, archived, restored, or loses decision authority. Update this guide only when the governance rule or an interpretation boundary changes.

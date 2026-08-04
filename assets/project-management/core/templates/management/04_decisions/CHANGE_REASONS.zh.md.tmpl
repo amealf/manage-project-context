@@ -19,17 +19,23 @@
 ```markdown
 ## YYYY-MM-DD — 简短变更标题
 
-**修改原因：**为什么需要这项变化。
+<strong>修改原因：</strong>为什么需要这项变化。
 
-**原有表现：**变化发生前的行为。
+<strong>变化分类：</strong>单次任务例外、长期规则变更、新变体或范围纠正。
 
-**更新后表现：**当前行为。
+<strong>原有表现：</strong>变化发生前的行为。
 
-**证据影响：**哪些产物、测试、记录或解释受到影响。
+<strong>更新后表现：</strong>当前行为。
 
-**有效边界：**新解释适用于哪里，哪些内容保持不变或待确认。
+<strong>证据影响：</strong>哪些产物、测试、记录或解释受到影响。
+
+<strong>身份与兼容关系：</strong>版本、方法、合同、兼容性或恢复身份是否变化。
+
+<strong>产物处理：</strong>哪些产物保持不变、需要重新生成，或改变生命周期与权威。
+
+<strong>有效边界：</strong>新解释适用于哪里，哪些内容保持不变或待确认。
 ```
 
 ## 维护规则
 
-新记录放在旧记录上方。链接证据，不复制大型输出。同一变化影响当前行为、代码架构或长期选择时，同时更新 `CURRENT_VERSION.en.md`、`CODE_ARCHITECTURE.en.md` 或 `DECISIONS.en.md`。
+新记录放在旧记录上方。链接证据，不复制大型输出。同一变化影响当前行为、代码架构、实现流程、保留产物或长期选择时，同时更新 `CURRENT_VERSION.en.md`、`CODE_ARCHITECTURE.en.md`、`IMPLEMENTATION_FLOW.en.md`、产物登记表或 `DECISIONS.en.md`。

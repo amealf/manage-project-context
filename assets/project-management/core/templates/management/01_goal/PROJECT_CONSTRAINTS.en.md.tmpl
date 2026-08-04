@@ -4,18 +4,26 @@
 
 Record durable constraints that apply across the project. Keep domain-specific rules in an approved optional module rather than assuming that domain exists.
 
+## Rule-change governance
+
+When a new instruction touches an established rule, identify whether it is a one-task exception, durable rule change, new variant, or scope correction. Do not change the related contract, implementation, or evidence interpretation until that classification is supported by the user's instruction or project evidence.
+
+For a material change, record whether the active identity changes, which artifacts remain valid, and which retained material becomes descriptive, reference-only, or invalid for decisions.
+
 ## Confirmed constraints
 
 | Constraint | Rationale | Evidence or owner | Status |
 | --- | --- | --- | --- |
 | Preserve existing user files during management-folder initialization. | Initialization must remain reviewable and reversible. | Project-management protocol | Current |
 | Keep English operational documents and Chinese review mirrors aligned. | Agents need one execution source while reviewers need a readable mirror. | Project-management protocol | Current |
+| Classify material records and artifacts by lifecycle and evidence authority. | Retained material can remain useful after it loses current decision authority. | Project-management protocol | Current |
 
 ## Quality and integrity
 
 - Make current paths, configurations, inputs, outputs, and validity boundaries traceable when they exist.
 - Do not claim support for a domain, platform, workflow, or quality level without evidence.
 - Prefer a small confirmed structure over speculative documents.
+- Keep volatile counts and execution snapshots in dated logs or registries; keep durable documents focused on stable conclusions.
 
 ## Open assumptions
 

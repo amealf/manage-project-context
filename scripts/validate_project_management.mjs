@@ -1,5 +1,15 @@
+import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
+
+const lifecycleValues = new Set(["active", "proposed", "historical", "retired", "unconfirmed"]);
+const documentAuthorityValues = new Set(["operational", "review", "reference", "private-lookup"]);
+const artifactAuthorityValues = new Set(["authoritative", "descriptive", "selection-only", "reference-only", "invalid-for-decisions"]);
+const managedPairs = new Set([
+  "agent-rules", "start", "goal", "constraints", "source", "version", "architecture", "tasks", "work-progress",
+  "decisions", "change-reasons", "history", "future", "references", "archive", "frontend", "backend", "research",
+  "data", "deployment", "security", "implementation-flow", "experiment-log", "artifacts",
+]);
 
 const coreRelativePaths = [
   "00_START_HERE.en.md",
@@ -33,6 +43,7 @@ const coreRelativePaths = [
   "assets/marked.umd.js",
   "assets/MARKED_LICENSE.md",
   "tools/build_dashboard.mjs",
+  "tools/archive_project_management.mjs",
   "index.html",
 ];
 
@@ -98,6 +109,186 @@ async function collectTextFiles(root) {
   }
   await visit(root);
   return output;
+}
+
+function maskInlineCode(line) {
+  let output = "";
+  let cursor = 0;
+  while (cursor < line.length) {
+    const start = line.indexOf("`", cursor);
+    if (start < 0) return output + line.slice(cursor);
+    output += line.slice(cursor, start);
+    let runEnd = start;
+    while (runEnd < line.length && line[runEnd] === "`") runEnd += 1;
+    const delimiter = line.slice(start, runEnd);
+    const close = line.indexOf(delimiter, runEnd);
+    if (close < 0) return output + " ".repeat(line.length - start);
+    output += " ".repeat(close + delimiter.length - start);
+    cursor = close + delimiter.length;
+  }
+  return output;
+}
+
+function markdownStrongSyntaxLines(content) {
+  const lines = content.split(/\r?\n/);
+  const matches = [];
+  let fenceCharacter = "";
+  let fenceLength = 0;
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    const fence = line.match(/^\s*(`{3,}|~{3,})/);
+    if (fence) {
+      const marker = fence[1];
+      if (!fenceCharacter) {
+        fenceCharacter = marker[0];
+        fenceLength = marker.length;
+      } else if (marker[0] === fenceCharacter && marker.length >= fenceLength) {
+        fenceCharacter = "";
+        fenceLength = 0;
+      }
+      continue;
+    }
+    if (fenceCharacter) continue;
+    const visible = maskInlineCode(line);
+    const delimiterRuns = visible.match(/(?<!\\)\*\*(?!\*)/g) || [];
+    if (delimiterRuns.length >= 2) matches.push(index + 1);
+  }
+  return matches;
+}
+
+function headingLevels(content) {
+  const levels = [];
+  let fenceCharacter = "";
+  let fenceLength = 0;
+  for (const line of content.split(/\r?\n/)) {
+    const fence = line.match(/^\s*(`{3,}|~{3,})/);
+    if (fence) {
+      const marker = fence[1];
+      if (!fenceCharacter) {
+        fenceCharacter = marker[0];
+        fenceLength = marker.length;
+      } else if (marker[0] === fenceCharacter && marker.length >= fenceLength) {
+        fenceCharacter = "";
+        fenceLength = 0;
+      }
+      continue;
+    }
+    if (fenceCharacter) continue;
+    const heading = line.match(/^(#{1,6})\s+\S/);
+    if (heading) levels.push(heading[1].length);
+  }
+  return levels;
+}
+
+function sha256(buffer) {
+  return crypto.createHash("sha256").update(buffer).digest("hex");
+}
+
+async function validateArtifactRegistries(manifest, managementRoot, projectRoot, errors) {
+  if (manifest.registries !== undefined && !Array.isArray(manifest.registries)) {
+    errors.push("Manifest registries must be an array when present.");
+    return;
+  }
+  const ids = new Set();
+  for (const registry of manifest.registries || []) {
+    if (!registry?.id || !registry?.path || !registry?.kind || !registry?.schemaVersion) {
+      errors.push("Every manifest registry requires id, kind, path, and schemaVersion.");
+      continue;
+    }
+    if (ids.has(registry.id)) errors.push(`Duplicate registry id: ${registry.id}`);
+    ids.add(registry.id);
+    const absolute = path.resolve(managementRoot, ...registry.path.split("/"));
+    if (!absolute.startsWith(`${projectRoot}${path.sep}`)) {
+      errors.push(`Registry path escapes the project root: ${registry.path}`);
+      continue;
+    }
+    if (!(await exists(absolute))) {
+      errors.push(`Manifest registry is missing: ${registry.path}`);
+      continue;
+    }
+    try {
+      const data = JSON.parse(await fs.readFile(absolute, "utf8"));
+      if (data.generatedBy !== "manage-project-context") errors.push(`Registry ownership marker is missing: ${registry.path}`);
+      if (data.schemaVersion !== registry.schemaVersion) errors.push(`Registry schema version differs from the manifest: ${registry.path}`);
+      if (!Array.isArray(data.items)) errors.push(`Registry items must be an array: ${registry.path}`);
+      const itemIds = new Set();
+      for (const item of data.items || []) {
+        if (!item?.id || !item?.kind || !item?.path || !item?.lifecycle || !item?.authority || !item?.validityBoundary) {
+          errors.push(`Artifact registry item requires id, kind, path, lifecycle, authority, and validityBoundary: ${registry.path}`);
+          continue;
+        }
+        if (itemIds.has(item.id)) errors.push(`Duplicate artifact registry item id ${item.id}: ${registry.path}`);
+        itemIds.add(item.id);
+        if (!lifecycleValues.has(item.lifecycle)) errors.push(`Invalid artifact lifecycle ${item.lifecycle} for ${item.id}.`);
+        if (!artifactAuthorityValues.has(item.authority)) errors.push(`Invalid artifact authority ${item.authority} for ${item.id}.`);
+      }
+    } catch (error) {
+      errors.push(`Registry is invalid JSON: ${registry.path}: ${error.message}`);
+    }
+  }
+}
+
+async function validateArchivePackages(managementRoot, errors, warnings) {
+  const archiveRoot = path.join(managementRoot, "99_archive");
+  if (!(await exists(archiveRoot))) return;
+  const manifests = [];
+  async function visit(directory) {
+    for (const entry of await fs.readdir(directory, { withFileTypes: true })) {
+      const absolute = path.join(directory, entry.name);
+      if (entry.isDirectory()) await visit(absolute);
+      else if (entry.isFile() && entry.name === "ARCHIVE_MANIFEST.json") manifests.push(absolute);
+    }
+  }
+  await visit(archiveRoot);
+  for (const manifestPath of manifests) {
+    let manifest;
+    try {
+      manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+    } catch (error) {
+      errors.push(`Archive manifest is invalid JSON: ${manifestPath}: ${error.message}`);
+      continue;
+    }
+    if (manifest.generatedBy !== "manage-project-context") {
+      warnings.push(`Archive manifest uses a nonstandard or legacy contract and was not closure-validated: ${manifestPath}`);
+      continue;
+    }
+    const archiveDirectory = path.dirname(manifestPath);
+    for (const note of ["README.en.md", "README.zh.md"]) {
+      if (!(await exists(path.join(archiveDirectory, note)))) errors.push(`Standard archive package is missing ${note}: ${archiveDirectory}`);
+    }
+    if (!Array.isArray(manifest.files) || !manifest.inventoryFingerprintSha256) {
+      errors.push(`Standard archive manifest lacks files or inventory fingerprint: ${manifestPath}`);
+      continue;
+    }
+    const items = [];
+    let totalBytes = 0;
+    for (const file of manifest.files) {
+      if (!file?.path || !Number.isInteger(file?.bytes) || !/^[a-f0-9]{64}$/.test(file?.sha256 || "")) {
+        errors.push(`Invalid file entry in archive manifest: ${manifestPath}`);
+        continue;
+      }
+      const payload = path.resolve(archiveDirectory, "payload", ...file.path.split("/"));
+      const payloadRoot = path.join(archiveDirectory, "payload");
+      if (!payload.startsWith(`${payloadRoot}${path.sep}`) || !(await exists(payload))) {
+        errors.push(`Archive payload is missing or unsafe: ${file.path} in ${manifestPath}`);
+        continue;
+      }
+      const buffer = await fs.readFile(payload);
+      if (buffer.length !== file.bytes || sha256(buffer) !== file.sha256) {
+        errors.push(`Archive payload closure mismatch: ${file.path} in ${manifestPath}`);
+      }
+      items.push(file);
+      totalBytes += buffer.length;
+    }
+    items.sort((left, right) => left.path.localeCompare(right.path, "en"));
+    const fingerprintLines = items.map((item) => `${item.path}\t${item.bytes}\t${item.sha256}`).join("\n") + "\n";
+    if (sha256(Buffer.from(fingerprintLines, "utf8")) !== manifest.inventoryFingerprintSha256) {
+      errors.push(`Archive inventory fingerprint mismatch: ${manifestPath}`);
+    }
+    if (manifest.payloadFileCount !== items.length || manifest.payloadSizeBytes !== totalBytes) {
+      errors.push(`Archive payload count or byte total mismatch: ${manifestPath}`);
+    }
+  }
 }
 
 function checkBilingualPairs(documents, errors) {
@@ -167,8 +358,9 @@ async function main() {
     try {
       manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
       if (manifest.generatedBy !== "manage-project-context") errors.push("Manifest ownership marker is missing.");
+      if (!Number.isInteger(manifest.schemaVersion) || manifest.schemaVersion < 2) errors.push("Manifest schemaVersion must be at least 2.");
       if (manifest.defaultLanguage !== "zh") errors.push("Dashboard default language must be zh.");
-      for (const group of ["priority", "planning", "state", "work", "domain", "reference", "archive"]) {
+      for (const group of ["priority", "planning", "state", "work", "domain", "evidence", "reference", "archive"]) {
         if (!manifest.groups?.[group]?.en || !manifest.groups?.[group]?.zh) {
           errors.push(`Manifest group ${group} requires English and Chinese labels.`);
         }
@@ -182,14 +374,35 @@ async function main() {
 
   if (manifest?.documents) {
     const ids = new Set();
+    const paths = new Set();
     for (const document of manifest.documents) {
       if (ids.has(document.id)) errors.push(`Duplicate manifest id: ${document.id}`);
       ids.add(document.id);
+      if (paths.has(document.path)) errors.push(`Duplicate manifest path: ${document.path}`);
+      paths.add(document.path);
+      const metadataMissing = !document.lifecycle || !document.authority || !Array.isArray(document.readWhen)
+        || !document.readWhen.length || !Array.isArray(document.updateWhen) || !document.updateWhen.length
+        || typeof document.privateLookup !== "boolean";
+      if (metadataMissing) {
+        const message = `Manifest document lacks lifecycle, authority, readWhen, updateWhen, or privateLookup metadata: ${document.id}`;
+        if (managedPairs.has(document.pair)) errors.push(message);
+        else warnings.push(message);
+      }
+      if (document.lifecycle && !lifecycleValues.has(document.lifecycle)) errors.push(`Invalid document lifecycle ${document.lifecycle}: ${document.id}`);
+      if (document.authority && !documentAuthorityValues.has(document.authority)) errors.push(`Invalid document authority ${document.authority}: ${document.id}`);
+      if (document.privateLookup && document.authority !== "private-lookup") {
+        errors.push(`Private lookup document must use private-lookup authority: ${document.id}`);
+      }
       const absolute = path.resolve(managementRoot, ...document.path.split("/"));
       if (!(absolute === projectRoot || absolute.startsWith(`${projectRoot}${path.sep}`))) {
         errors.push(`Manifest path escapes the project root: ${document.path}`);
       } else if (!(await exists(absolute))) {
         errors.push(`Manifest document is missing: ${document.path}`);
+      } else if (/\.md$/i.test(absolute)) {
+        const strongLines = markdownStrongSyntaxLines(await fs.readFile(absolute, "utf8"));
+        if (strongLines.length) {
+          errors.push(`Managed Markdown must use HTML <strong>...</strong>, not **...**, in ${document.path} at line(s): ${strongLines.join(", ")}.`);
+        }
       }
     }
     const agentEnglish = manifest.documents.find((document) => document.pair === "agent-rules" && document.lang === "en");
@@ -206,8 +419,11 @@ async function main() {
       ["source", "state"],
       ["version", "state"],
       ["architecture", "state"],
+      ["implementation-flow", "state"],
       ["tasks", "work"],
       ["work-progress", "work"],
+      ["experiment-log", "work"],
+      ["artifacts", "evidence"],
       ["decisions", "reference"],
       ["change-reasons", "reference"],
       ["future", "reference"],
@@ -218,12 +434,34 @@ async function main() {
     for (const [pair, expectedGroup] of expectedGroups) {
       for (const language of ["en", "zh"]) {
         const document = manifest.documents.find((entry) => entry.pair === pair && entry.lang === language);
-        if (document?.group !== expectedGroup) {
+        if (document && document.group !== expectedGroup) {
           errors.push(`Manifest pair ${pair}.${language} must appear in the ${expectedGroup} group.`);
         }
       }
     }
+
+    const pairs = new Map();
+    for (const document of manifest.documents) {
+      if (!pairs.has(document.pair)) pairs.set(document.pair, {});
+      pairs.get(document.pair)[document.lang] = document;
+    }
+    for (const [pair, languages] of pairs) {
+      if (!languages.en || !languages.zh) continue;
+      const englishPath = path.resolve(managementRoot, ...languages.en.path.split("/"));
+      const chinesePath = path.resolve(managementRoot, ...languages.zh.path.split("/"));
+      if (!(await exists(englishPath)) || !(await exists(chinesePath))) continue;
+      const [englishLevels, chineseLevels] = await Promise.all([
+        fs.readFile(englishPath, "utf8").then(headingLevels),
+        fs.readFile(chinesePath, "utf8").then(headingLevels),
+      ]);
+      if (englishLevels.join(",") !== chineseLevels.join(",")) {
+        warnings.push(`Bilingual heading structure differs for pair ${pair}: en=[${englishLevels.join(",")}] zh=[${chineseLevels.join(",")}].`);
+      }
+    }
   }
+
+  if (manifest) await validateArtifactRegistries(manifest, managementRoot, projectRoot, errors);
+  await validateArchivePackages(managementRoot, errors, warnings);
 
   if (await exists(managementRoot)) {
     for (const file of await collectTextFiles(managementRoot)) {
@@ -248,6 +486,8 @@ async function main() {
       'data-theme-toggle',
       'id="outline-trigger"',
       'id="outline-panel"',
+      'id="document-status"',
+      'class="document-badge"',
       "AGENTS.md",
     ];
     for (const fragment of requiredFragments) {

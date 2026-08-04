@@ -29,10 +29,11 @@ Before initialization or project-changing work, form a compact internal intake l
 | Work progress | Completed or materially changed work, outcome, evidence, limits, and handoff paths |
 | Change reasons | Material behavior changes whose prior behavior and evidence impact must remain auditable |
 | Current state | Confirmed deliverables, behavior, authoritative paths, known gaps |
+| Artifacts | Stable identity, provenance, lifecycle, evidence authority, replacement, and validity boundary when material |
 | Domains | Only user-confirmed or strongly evidenced optional domains |
 | Unknowns | Missing, conflicting, or tentative claims that need confirmation |
 
-For each item, distinguish `current`, `proposed`, `historical`, and `unconfirmed`. Retain the conclusion and useful rationale, not conversational wording.
+For each material item, distinguish lifecycle (`active`, `proposed`, `historical`, `retired`, or `unconfirmed`) from evidence authority (`authoritative`, `descriptive`, `selection-only`, `reference-only`, or `invalid-for-decisions`). Retain the conclusion and useful rationale, not conversational wording.
 
 ## Evidence reconciliation
 
@@ -46,6 +47,8 @@ Apply this precedence while preserving discrepancies:
 
 User intent does not falsify observed behavior, and observed behavior does not silently replace user intent. When they disagree, record the intended state, observed state, and required resolution in the appropriate current-task or decision document.
 
+When a new instruction touches an established rule, classify it as a task exception, durable rule change, new variant, or scope correction. Record the identity and artifact impact before changing related behavior. Preserve historical artifacts with explicit status instead of rewriting them to resemble the corrected current contract.
+
 ## New and existing project behavior
 
 For a new project, create the neutral management scaffold and populate it from confirmed intake facts. Build an implementation scaffold only when the user requested project implementation and the conversation establishes enough project shape to choose it. Unknown project type never justifies a domain module.
@@ -56,6 +59,8 @@ For an existing project, combine the intake ledger with actual project evidence.
 
 At the beginning of each project-changing task, read the latest available conversation, root `AGENTS.md`, `00_START_HERE.en.md`, and the English documents selected by the task matrix.
 
-Before finishing a project-changing task, classify every accepted durable chat change through the maintenance-trigger table. Update the mapped English document and Chinese mirror, append completed or materially changed work to `WORK_PROGRESS`, add `CHANGE_REASONS` when a behavior change needs durable rationale, rebuild the Dashboard, and validate the result. This maintenance is part of the project change even when the user does not restate it.
+Before finishing a project-changing task, classify every accepted durable chat change through the maintenance-trigger table. Update the mapped English document and Chinese mirror, append completed or materially changed work to `WORK_PROGRESS`, add `CHANGE_REASONS` when a behavior change needs durable rationale, update active optional logs or registries, rebuild the Dashboard, and validate the result. This maintenance is part of the project change even when the user does not restate it.
+
+For an authority transition, follow [state-transition-protocol.md](state-transition-protocol.md): identify the new current identity, reclassify affected evidence, archive misleading active detail, and leave replacement and restoration pointers.
 
 Do not modify project files for explanation-only questions, brainstorming, hypotheticals, or unaccepted suggestions. If a new idea should be retained but is not active, record it as proposed or future only when the user asks to retain it or clearly establishes it as a project candidate.

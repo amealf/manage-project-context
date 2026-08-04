@@ -5,6 +5,7 @@
     "state": { "en": "Current state", "zh": "当前状态" },
     "work": { "en": "Active work", "zh": "当前工作" },
     "domain": { "en": "Domain rules", "zh": "领域规则" },
+    "evidence": { "en": "Evidence and artifacts", "zh": "证据与产物" },
     "reference": { "en": "Project reference", "zh": "项目参考" },
     "archive": { "en": "History and archive", "zh": "历史与存档" }
   },
