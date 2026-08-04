@@ -4,12 +4,14 @@
 
 1. Operating examples
 2. Conversation intake
-3. Inspection and mode selection
-4. Optional module evidence
-5. Optional feature evidence
-6. Reading rules
-7. Chat-driven maintenance
-8. Initialization and review
+3. PRD clarification
+4. Inspection and mode selection
+5. Optional module evidence
+6. Optional feature evidence
+7. Reading rules
+8. Chat-driven maintenance
+9. Initialization and review
+10. Saved-state handoff
 
 ## Operating examples
 
@@ -21,9 +23,15 @@
 
 ## Conversation intake
 
-Read [conversation-protocol.md](conversation-protocol.md) before initialization or maintenance. Review the messages and delegated context available in the current task, then form an internal intake ledger of confirmed goals, constraints, decisions, tasks, current state, domains, corrections, and unknowns.
+Read [conversation-protocol.md](conversation-protocol.md) before initialization or maintenance. Review the messages and delegated context available in the current task, then form an internal intake ledger of confirmed goals, constraints, required tools, delivery stages, acceptance, decisions, tasks, current state, domains, corrections, and unknowns.
 
 Use the latest explicit user correction. Do not copy the transcript into the project. Do not imply access to conversation from another task unless that content is provided or returned by an authorized task-reading tool.
+
+## PRD clarification
+
+Read [prd-intake-and-handoff.md](prd-intake-and-handoff.md). Treat the folder as a detailed, living PRD and ask the creator concise questions for missing requirements that could alter the output. Ask no more than three questions in one message and avoid repeating supplied facts.
+
+Confirm the outcome and acceptance boundary, constraints and required tools, current state and intended stages. Then ask which predefined domains and optional features apply. Allow unknown or deferred answers when they do not block safe progress.
 
 ## Inspection and mode selection
 
@@ -48,7 +56,7 @@ Never downgrade a non-empty existing project to `new` mode.
 
 The core is domain-neutral. The management dashboard is an offline documentation viewer and never counts as frontend evidence.
 
-Add an optional module only when the user confirms it or project artifacts establish that the domain is part of the maintained project:
+Add an optional module only when the creator confirms it in the current exchange or it is already confirmed in authoritative project records. Use project artifacts to identify candidates, then present unconfirmed candidates before initialization:
 
 | Module | Strong evidence | Insufficient evidence by itself |
 | --- | --- | --- |
@@ -63,7 +71,7 @@ When evidence is ambiguous, omit the module and mention it as a candidate. A mis
 
 ## Optional feature evidence
 
-Read [optional-features.md](optional-features.md) before adding a feature. Features are independent from domains except `experiment-log`, which requires the `research` module.
+Read [optional-features.md](optional-features.md) before adding a feature. Features are independent from domains except `experiment-log`, which requires the `research` module. Explain relevant candidates and obtain creator confirmation before enabling one.
 
 - Add `process-flow` only when ordered stages, timing, validation gates, handoffs, or recovery boundaries form a durable project contract.
 - Add `experiment-log` only when a confirmed research project needs experiments separated from implementation and delivery work.
@@ -142,3 +150,7 @@ Review every proposal before merging. A proposal is not current truth and must n
 Run `scripts\validate_project_management.mjs`, then open the generated dashboard. Verify language switching, theme persistence, search, left navigation, the floating outline, keyboard focus, readable contrast, and responsive layout. Keep screenshots with the retained example or task artifacts when browser access is available.
 
 Never remove project files as part of initialization or testing.
+
+## Saved-state handoff
+
+After validation, use the completion format in [prd-intake-and-handoff.md](prd-intake-and-handoff.md). Tell the creator what usable outputs were saved, which project references or evidence were retained, which management records changed, and where work should continue. Keep the report to five bullets or fewer and omit empty categories.

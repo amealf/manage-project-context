@@ -51,6 +51,14 @@ async function main() {
   }
   await fs.mkdir(options.outputRoot, { recursive: true });
 
+  const readme = await fs.readFile(path.join(scriptDirectory, "..", "README.md"), "utf8");
+  const headings = [...readme.matchAll(/^#{2,4}\s+(.+)$/gm)].map((match) => match[1].trim());
+  for (const heading of headings) {
+    if (heading.length > 32 || /[?？]$/.test(heading) || /^(How|What|Why|When|Where)\b/i.test(heading) || /^(如何|怎么|怎样|为什么|是什么)/.test(heading)) {
+      throw new Error(`README heading must be a concise label: ${heading}`);
+    }
+  }
+
   const newProject = path.join(options.outputRoot, "new-project");
   const newInit = parseJsonOutput(await run(initializer, [
     "--project", newProject,
@@ -65,8 +73,10 @@ async function main() {
   const newProtocolChecks = [
     [path.join(newProject, "AGENTS.md"), "## Conversation-driven project memory"],
     [path.join(newProject, "AGENTS.zh.md"), "## 聊天驱动的项目记忆"],
-    [path.join(newProject, "project_management", "00_START_HERE.en.md"), "## Conversation intake and ongoing maintenance"],
-    [path.join(newProject, "project_management", "00_START_HERE.zh.md"), "## 聊天内容摄取与持续维护"],
+    [path.join(newProject, "project_management", "00_START_HERE.en.md"), "## PRD intake"],
+    [path.join(newProject, "project_management", "00_START_HERE.zh.md"), "## PRD 问询"],
+    [path.join(newProject, "project_management", "00_START_HERE.en.md"), "## Completion report"],
+    [path.join(newProject, "project_management", "00_START_HERE.zh.md"), "## 完成回报"],
   ];
   for (const [target, fragment] of newProtocolChecks) {
     if (!(await fs.readFile(target, "utf8")).includes(fragment)) {
@@ -80,6 +90,17 @@ async function main() {
   for (const [target, fragment] of architectureChecks) {
     if (!(await fs.readFile(target, "utf8")).includes(fragment)) {
       throw new Error(`Code-architecture record is missing from ${target}.`);
+    }
+  }
+  const prdFieldChecks = [
+    [path.join(newProject, "project_management", "01_goal", "PROJECT_GOAL.en.md"), "## Delivery path"],
+    [path.join(newProject, "project_management", "01_goal", "PROJECT_GOAL.zh.md"), "## 交付路径"],
+    [path.join(newProject, "project_management", "01_goal", "PROJECT_CONSTRAINTS.en.md"), "## Required tools"],
+    [path.join(newProject, "project_management", "01_goal", "PROJECT_CONSTRAINTS.zh.md"), "## 必用工具"],
+  ];
+  for (const [target, fragment] of prdFieldChecks) {
+    if (!(await fs.readFile(target, "utf8")).includes(fragment)) {
+      throw new Error(`Detailed PRD field is missing from ${target}.`);
     }
   }
   const classificationChecks = [

@@ -10,7 +10,7 @@
 
 ## Selection rules
 
-Keep the default scaffold compact. Add a feature only when the user requests it or current project evidence shows that its record would carry durable information.
+Keep the default scaffold compact. Add a feature only after the creator confirms it and current project needs show that its record will carry durable information. Use project evidence to suggest candidates; evidence alone does not enable a feature. Do not repeat a question when an authoritative project record already contains the creator's confirmation.
 
 Use repeated or comma-separated `--include-feature` values:
 

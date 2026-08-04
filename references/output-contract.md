@@ -11,7 +11,7 @@
 
 ## Core tree
 
-The default management directory is `project_management`. A new or existing project receives only this neutral core:
+The default management directory is `project_management`. Together, its core documents form a detailed, living PRD: requirements, current truth, delivery state, decision history, references, and recoverable context. A new or existing project receives only this neutral core:
 
 ```text
 <project-root>
@@ -105,6 +105,7 @@ The artifact registry is declared under the manifest's `registries` array and is
 - Keep `CURRENT_TASKS` forward-looking and `WORK_PROGRESS` outcome-focused. Archive superseded detailed progress when a major version or working method changes and retain a restoration pointer.
 - Use `CHANGE_REASONS` only for material behavior changes whose reason, prior behavior, updated behavior, evidence impact, and validity boundary must remain auditable.
 - Populate generated records from conversation that is actually available in the current task and from inspected project evidence. Do not claim access to unseen chat history.
+- Ask the creator about missing high-impact requirements and confirm applicable predefined categories before generation. Do not repeat answered questions or enable speculative categories.
 - Retain confirmed conclusions and useful rationale, not raw conversation transcripts. Exclude secrets and private personal data.
 - Let the latest explicit user correction supersede an older conversation summary while preserving material discrepancies with observed project behavior.
 - Keep proposals, archived material, and future ideas outside current-truth claims.
@@ -112,6 +113,7 @@ The artifact registry is declared under the manifest's `registries` array and is
 - Keep volatile counts and execution snapshots in dated logs or registries; retain only stable conclusions in durable goal, constraint, and current-state documents.
 - Use HTML `<strong>...</strong>` for bold text in generated and maintained Markdown. Markdown `**...**` strong syntax is prohibited outside inline code, fenced code, and literal glob/path examples.
 - Use an explicit `--date` plus stable inputs for reproducible generated Markdown.
+- After project-changing work, report usable deliverables, retained references, updated records, status changes, and handoff in five bullets or fewer, omitting empty items.
 
 ## Manifest contract
 

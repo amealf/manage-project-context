@@ -1,4 +1,4 @@
 interface:
   display_name: "Project Context / 项目管理目录"
-  short_description: "Auditable project memory / 可审计双语项目记忆"
-  default_prompt: "Use $manage-project-context to build or update bilingual project memory, preserve existing files, and govern version, evidence, and archive boundaries from confirmed context. / 使用 $manage-project-context 根据已确认上下文建立或维护双语项目记忆，保留已有文件，并管理版本、证据与存档边界。"
+  short_description: "Living project PRD / 双语动态项目 PRD"
+  default_prompt: "Use $manage-project-context to build or update a bilingual detailed PRD, ask concise questions for missing requirements and category choices, preserve existing files, and finish with a compact saved-state report. / 使用 $manage-project-context 建立或维护双语详细 PRD，用简短问题补全缺失需求与分类选择，保留已有文件，并在完成后给出精简的保存状态回报。"

@@ -337,14 +337,28 @@ async function main() {
   );
   await validateProtocolFile(
     path.join(managementRoot, "00_START_HERE.en.md"),
-    "## Conversation intake and ongoing maintenance",
+    "## PRD intake",
     "00_START_HERE.en.md",
     errors,
     warnings,
   );
   await validateProtocolFile(
     path.join(managementRoot, "00_START_HERE.zh.md"),
-    "## 聊天内容摄取与持续维护",
+    "## PRD 问询",
+    "00_START_HERE.zh.md",
+    errors,
+    warnings,
+  );
+  await validateProtocolFile(
+    path.join(managementRoot, "00_START_HERE.en.md"),
+    "## Completion report",
+    "00_START_HERE.en.md",
+    errors,
+    warnings,
+  );
+  await validateProtocolFile(
+    path.join(managementRoot, "00_START_HERE.zh.md"),
+    "## 完成回报",
     "00_START_HERE.zh.md",
     errors,
     warnings,

@@ -4,77 +4,75 @@
 
 ## 中文
 
-`manage-project-context` 为项目建立一套可长期维护的双语工作记录。它把目标、约束、当前版本、任务、进展、决策、代码架构、变更理由和存档边界分开保存，再生成一个离线 Dashboard，方便查找与审阅。
+### 定位
 
-项目做久以后，最容易丢掉的往往是三件事：「最终要完成什么」「现在做到哪里」「哪些规则仍然有效」。把所有内容塞进 `AGENTS.md` 会让高频规则和低频背景混在一起。这个 Skill 保留简洁的根目录规则，并用任务读取矩阵把 Agent 引到当前工作真正需要的文档。
+`manage-project-context` 是一份会随项目更新的详细产品需求文档（Product Requirements Document，PRD）。它把创作者的想法整理成 AI 和团队都能执行的项目约定，并保存目标、约束、工具、版本、任务、进展、决策、参考材料与历史记录。
 
-已有项目会同时核对当前任务内可用的聊天和真实项目文件。用户最新确认的意图、项目当前行为与管理文档发生冲突时，Skill 会保存差异，不会为了让说明看起来一致而改写证据。
+这份 PRD 适用于软件、研究、内容、运营等项目。英文文档供 Agent 执行，中文版本便于审阅；离线 Dashboard 用来搜索和浏览全部记录。
 
-项目推进期间，已确认的长期变化会写回对应文档。重要记录和产物还会分别标注生命周期与证据权威：材料可以继续保留，同时失去当前决策权。
+### PRD 价值
 
-### 文档怎么分
+很多项目的问题源于需求只存在于聊天里。目标说过一次，约束散落在几段对话中，版本变化又没有留下边界。AI 遇到空白时容易自行补全，结果看起来合理，却偏离了创作者的本意。
 
-Skill 会按照文档在项目中的作用进行分类：
+详细 PRD 会把这些信息变成长期可查的约定：项目要得到怎样的结果、哪些事情不能做、必须使用哪些工具、当前已经有什么、计划分几步完成、怎样才算验收通过。后续任务会读取相关记录，减少误解、重复说明和无依据的改动。
 
-- 「必读入口」保存根目录 Agent 规则与项目管理入口。
-- 「目标与约束」说明项目要完成什么，以及工作必须遵守的边界。
-- 「当前状态」保存当前有效文件、当前版本与代码架构。
-- 「当前工作」记录正在进行的任务与进展。
-- 「领域规则」显示项目实际使用的前端、后端、研究、数据、部署或安全文档。
-- 「证据与产物」在项目需要时登记产物身份、来源、指纹、替代物与有效边界。
-- 「项目参考」保存长期决定、重要变更理由、后续方向与参考材料。
-- 「历史与存档」保存过去事件和非活动材料，只在检查、复用或恢复旧工作时读取。
+### 信息权重
 
-同一套分类同时控制生成的文件、Dashboard 导航、Agent 按任务读取文档的规则，以及聊天出现长期变化后应该更新哪份文档。
+项目资料的重要程度和使用频率并不相同。这个 Skill 会给信息分层：根目录只放高频工作规则；目标、约束和当前状态属于日常依据；领域文档按任务读取；参考材料与存档在需要追溯时再打开。
 
-### 它会建立什么
+这种权重设计让关键要求保持醒目，也让低频背景完整留存。项目规模变大后，Agent 仍能获得足够上下文，不必把全部历史塞进一次任务。
 
-- 根目录下的 `AGENTS.md` 和 `AGENTS.zh.md`
-- 英文执行文档及对应的中文审阅版
-- 按任务读取文档的规则
-- 在聊天确认变化后更新项目记忆的规则
-- 不覆盖原文件的冲突处理提案
-- 默认中文、支持搜索与深浅主题的离线 Dashboard
-- Dashboard 中的生命周期与管理权威标识
-- 只有项目实际需要时才出现的领域文档
-- 可选的实现流程、实验日志与产物登记表
-- 带中英文说明、逐文件 SHA-256 与清单指纹的可恢复归档包
+### 预设分类
 
-### 建议的项目管理方式
+核心 PRD 固定记录目标、约束、当前状态、版本、任务、进展、决策、参考与可恢复历史。Skill 还准备了几类常见扩展：
 
-日常任务保持三层分工：`CURRENT_TASKS` 只写仍需处理的工作、状态和验收条件；`WORK_PROGRESS` 记录已经完成或发生重要变化的结果；目标、约束与当前版本只保留稳定结论。运行数量、临时统计和执行快照放进带日期的日志或登记表，避免同一个数字散落在多个长期文件里。
+- 领域：`frontend`、`backend`、`research`、`data`、`deployment`、`security`
+- 流程：`process-flow`
+- 实验：`experiment-log`，需要 `research`
+- 产物：`artifact-registry`
 
-每项任务使用稳定标识，并写清目标、验收条件、阻塞因素和交接位置。工作结束时，根据维护触发表更新对应英文来源与中文镜像，再重建 Dashboard。解释型问题、假设和未确认想法不会修改项目记录。
+这些分类覆盖了项目后期常见的管理需求。启用前仍由创作者确认，暂时用不到的内容不会进入项目目录。
 
-新指令碰到已有规则时，要明确它属于单次任务例外、长期规则变更、新变体还是范围纠正。这个分类决定是否修改当前合同、建立独立版本、重新生成产物，或只修正此前的错误理解。
+### 项目问询
 
-### 建议的版本更新方式
+调用 Skill 后，它会根据已有信息补问关键缺口，每轮最多三个短问题。已经说清楚的内容不会重复询问。常见问题包括：
 
-版本、方法、数据合同或主要交付身份变化时，建议按下列顺序处理：
+- 这次想完成怎样的结果，验收标准是什么？
+- 有哪些约束、禁区或必须使用的工具？
+- 当前已有材料和实现到了哪里，计划分哪些阶段推进？
+- 预设领域、流程、实验和产物分类中，哪些适合这个项目？
 
-1. 声明新的当前身份、生效范围与验收标准。
-2. 为旧身份标注生命周期和证据权威，说明它还能用于什么。
-3. 列出受影响的代码、配置、接口、测试、产物、报告和恢复入口。
-4. 区分保持有效、仅供描述、只可用于选择、仅供参考和不能参与决策的旧证据。
-5. 更新当前状态、任务、进展、决策、变更理由及相关领域文档。
-6. 旧的活动正文会误导日常工作时，把它放进可恢复归档包，并在当前文档保留替代与恢复指针。
+不确定的内容可以回答「待确认」。会影响结构、结果或安全的缺口需要确认；其余内容可以留待项目推进后补充。
 
-版本切换不会追溯改写历史产物。旧材料保留原貌，其新状态和有效边界写在管理记录里。
+### 完成回报
 
-### 建议的测试与验证方式
+每次项目修改完成后，Skill 会用不超过五项的简短回报说明当前保存状态：
 
-测试范围应跟变化风险一致。局部行为变化运行对应单元测试与回归测试；跨组件、接口、数据流或生成产物的变化增加集成验证；发布边界变化还要检查最终交付物和恢复路径。项目没有某类测试基础时，记录缺口，不虚构通过结果。
+- 可用产物：本次建立或修改了哪些成果
+- 项目参考：保留了哪些来源、证据或产物
+- 管理记录：更新了哪些目标、任务、版本、进展或决定
+- 状态变化：哪些内容已替代、归档、降级或仍待确认
+- 下一交接：后续工作从哪里继续，或本次范围已经关闭
 
-每次重要修改都要说明测试对象、回归边界、保留产物和证据限制。失败记录保留准确命令、输入身份与失败阶段，修复后重新运行受影响测试。行为合同或身份变化时，旧测试结果也要重新判断其证据权威。
+空项和中间命令不会占用回报篇幅。
 
-项目管理目录自身建议保留三层验证：运行初始化器自测，运行结构验证器，再检查 Dashboard 的中英文切换、搜索、导航、生命周期标识、深浅主题与桌面／移动布局。布局或交互变化后保存截图，并检查重叠、乱码、溢出和明显不对称。
+### 项目管理
 
-### 可选功能怎么选
+建议让 `CURRENT_TASKS` 保存待办、状态与验收条件，让 `WORK_PROGRESS` 记录完成结果与交接位置。目标、约束和当前版本只保留稳定结论；运行次数、临时统计和执行快照放进带日期的日志或登记表。
 
-- 项目有稳定的阶段顺序、时序、验证关卡或恢复点时，启用 `process-flow`。
-- 研究项目需要把实验与实现工作分开记录时，启用 `research` 模块和 `experiment-log`。
-- 产物需要稳定身份、来源、哈希、替代物或有效边界时，启用 `artifact-registry`。
-- 小型项目或项目形态仍待确认时，保持精简核心。
+每项任务使用稳定标识，并写明目标、完成条件、阻塞因素和交接位置。聊天中确认了长期变化后，对应的英文来源与中文镜像会一同更新。解释、假设和未接受的想法不会改动项目记录。
+
+### 版本管理
+
+版本、方法、数据合同或主要交付物变化时，应记录新身份、生效范围与验收标准，再说明旧版本还能用于哪些场景。受影响的代码、配置、接口、测试、产物和恢复入口也要登记。
+
+旧材料保留原貌，并标注生命周期（Lifecycle）与证据权威（Evidence Authority）。它可以继续作为参考，同时失去当前决策权。旧内容会干扰日常工作时，可放入带指纹和恢复说明的归档包。
+
+### 测试
+
+测试范围应与改动风险相称。局部行为变化检查单元测试（Unit Test）与回归测试（Regression Test）；跨组件、接口、数据流或生成产物的变化增加集成测试（Integration Test）；发布变化还要检查最终交付物与恢复路径。
+
+每次重要修改都记录测试对象、覆盖边界、保留证据与已知缺口。失败记录保留命令、输入身份和失败阶段。项目缺少某类测试时，应如实记录，不虚构通过结果。
 
 ### 使用
 
@@ -87,98 +85,88 @@ Skill 会按照文档在项目中的作用进行分类：
 新项目：
 
 ```text
-使用 $manage-project-context 创建这个新项目的管理框架，并根据当前聊天填写已经确认的目标、约束、决定和任务。项目类型还没确定，不要添加领域模块。
+使用 $manage-project-context 为这个新项目建立详细 PRD。根据已有聊天整理需求，并询问缺失的目标、约束、工具、阶段、验收标准和分类选择。
 ```
 
 已有项目：
 
 ```text
-使用 $manage-project-context 阅读当前聊天和项目文件，在不覆盖已有内容的情况下建立项目管理目录，并让后续聊天中的已确认变化持续更新到对应文档。
+使用 $manage-project-context 阅读当前聊天和项目文件，在保留已有内容的前提下建立或更新详细 PRD，并在完成后告诉我保存了哪些产物、参考和管理记录。
 ```
-
-带可选功能的项目：
-
-```text
-使用 $manage-project-context 为这个研究项目建立双语项目记忆，启用 research 模块、process-flow、experiment-log 与 artifact-registry，并保留已有文件。
-```
-
 
 ## English
 
-`manage-project-context` gives a project a maintainable bilingual working record. It separates goals, constraints, current versions, tasks, progress, decisions, code architecture, change reasons, and archive boundaries, then generates an offline Dashboard for search and review.
+### Positioning
 
-Long-running projects commonly lose three things: the durable objective, the current handoff point, and the rules that still apply. Putting everything in `AGENTS.md` mixes high-frequency operating rules with low-frequency background. This Skill keeps root rules concise and uses a task-reading matrix to route the agent to the documents needed for the current work.
+`manage-project-context` creates a detailed product requirements document (PRD) that evolves with the project. It turns the creator's intent into an executable agreement for agents and teams, retaining goals, constraints, tools, versions, tasks, progress, decisions, references, and history.
 
-For an existing project, the Skill reconciles the conversation available in the current task with real project files. When the latest confirmed intent, observed behavior, and management records disagree, it preserves the discrepancy instead of rewriting evidence to make the records look consistent.
+The PRD works for software, research, content, operations, and other projects. English documents are the operational source for agents, Chinese documents support review, and an offline Dashboard provides search and navigation.
 
-As work continues, accepted durable changes are written back to the mapped documents. Material records and artifacts also carry separate lifecycle and evidence-authority classifications: an item can remain retained after it loses current decision authority.
+### PRD value
 
-### How documents are organized
+Projects often fail when requirements exist only in chat. A goal may appear once, constraints may be scattered across messages, and version changes may lack a durable boundary. When information is missing, an agent may fill the gap with a plausible assumption and produce work that does not match the creator's intent.
 
-The Skill groups documents by the role they play in the project:
+A detailed PRD makes the contract durable: the intended outcome, prohibited actions, required tools, current state, delivery stages, and acceptance criteria. Later tasks read the relevant records, reducing misunderstanding, repeated explanation, and unsupported changes.
 
-- <strong>Read first</strong> contains the root agent rules and the project-management entry point.
-- <strong>Goals and constraints</strong> explains what the project must accomplish and which boundaries govern the work.
-- <strong>Current state</strong> contains the current valid files, current version, and code architecture.
-- <strong>Active work</strong> records current tasks and progress.
-- <strong>Domain rules</strong> contains documents for the frontend, backend, research, data, deployment, or security areas the project actually uses.
-- <strong>Evidence and artifacts</strong> appears when the project needs artifact identity, provenance, fingerprints, replacements, and validity boundaries.
-- <strong>Project reference</strong> contains durable decisions, important change reasons, future directions, and retained sources.
-- <strong>History and archive</strong> contains past events and inactive material, loaded only when old work needs to be inspected, reused, or restored.
+### Information weight
 
-The same classification model controls the generated files, Dashboard navigation, task-based reading rules for agents, and the document updated after a durable conversation change.
+Project information differs in importance and frequency of use. This Skill gives it different reading weights: root files hold frequent operating rules; goals, constraints, and current state guide daily work; domain documents load by task; references and archives load when traceability is needed.
 
-### What it creates
+The weighting keeps essential requirements visible while preserving low-frequency context. As the project grows, an agent can retrieve enough context without loading the entire history into every task.
 
-- Root `AGENTS.md` and `AGENTS.zh.md` files
-- English operational documents with corresponding Chinese versions for review
-- Task-based reading rules
-- Rules for updating project memory when a change is confirmed in conversation
-- Proposal files for conflicts, without overwriting existing files
-- An offline Dashboard with Chinese as the default language, search, and light/dark themes
-- Lifecycle and management-authority badges in the Dashboard
-- Domain documents only when the project actually needs them
-- Optional implementation-flow, experiment-log, and artifact-registry records
-- Recoverable archive packages with bilingual notes, per-file SHA-256 values, and an inventory fingerprint
-- HTML `<strong>...</strong>` markup for bold text, with validation that rejects Markdown `**...**` outside code and literal glob examples
+### Categories
 
-### Recommended project-management practice
+The core PRD always records goals, constraints, current state, versions, tasks, progress, decisions, references, and recoverable history. Common extensions are available:
 
-Keep three layers separate during everyday work. `CURRENT_TASKS` contains unfinished work, status, and acceptance. `WORK_PROGRESS` records completed or materially changed outcomes. Goal, constraint, and current-version documents retain stable conclusions. Put run counts, temporary measurements, and execution snapshots in dated logs or registries so the same volatile number does not spread across several durable files.
+- Domains: `frontend`, `backend`, `research`, `data`, `deployment`, `security`
+- Process: `process-flow`
+- Experiments: `experiment-log`, which requires `research`
+- Artifacts: `artifact-registry`
 
-Give each task a stable identifier, objective, acceptance boundary, blockers, and handoff location. At task close, use the maintenance-trigger table to update the English operational source and Chinese mirror, then rebuild the Dashboard. Explanation-only questions, hypotheticals, and unaccepted ideas do not mutate project records.
+These categories cover needs that commonly appear as projects mature. The creator confirms each category before it is enabled, so unused material stays out of the project folder.
 
-When a new instruction touches an established rule, classify it as a task exception, durable rule change, new variant, or scope correction. That classification determines whether the current contract changes, a separate identity is required, artifacts need regeneration, or only an earlier interpretation needs correction.
+### Intake
 
-### Recommended version-update practice
+After invocation, the Skill asks concise questions about important gaps, with no more than three questions per message. It does not repeat facts already supplied. Typical topics include:
 
-When a version, method, data contract, or primary delivery identity changes:
+- Intended outcome and acceptance criteria
+- Constraints, prohibited actions, and required tools
+- Existing material, current implementation, and planned stages
+- Applicable domain, process, experiment, and artifact categories
 
-1. Declare the new active identity, effective boundary, and acceptance criteria.
-2. Assign the prior identity a lifecycle and evidence authority, including its remaining permitted uses.
-3. Inventory affected code, configuration, interfaces, tests, artifacts, reports, and recovery entries.
-4. Separate evidence that remains authoritative from descriptive, selection-only, reference-only, and invalid-for-decisions material.
-5. Update current state, tasks, progress, decisions, change reasons, and affected domain records.
-6. When old active detail would mislead routine work, place it in a recoverable archive package and leave replacement and restoration pointers in the active records.
+The creator may answer “unconfirmed.” A gap that affects structure, outcome, or safety must be resolved; other gaps can remain open while the project develops.
 
-A version transition preserves historical artifacts as they were produced. Their new status and validity boundary belong in the management records.
+### Completion report
 
-### Recommended testing and validation practice
+After each completed project-changing task, the Skill reports the saved state in five bullets or fewer:
 
-Match test scope to change risk. A local behavior change needs focused unit and regression coverage. Changes across components, interfaces, data flow, or generated artifacts need integration validation. A release-boundary change also needs final-deliverable and recovery-path checks. If the project lacks a test layer, record the gap rather than claiming a pass.
+- Deliverables created or changed
+- References, evidence, or artifacts retained
+- Goals, tasks, versions, progress, or decisions updated
+- Replacements, archives, authority changes, or open uncertainties
+- Next handoff or closed task boundary
 
-For every material change, state what was tested, the regression boundary, retained artifacts, and evidence limits. Preserve the exact command, input identity, and failure stage for a failed run, then rerun affected coverage after the repair. When behavior contracts or identities change, reclassify the authority of older test results.
+Empty categories and intermediate commands are omitted.
 
-For the project-management folder itself, retain three layers of validation: initializer self-tests, structural validation, and Dashboard review. Check both languages, search, navigation, lifecycle badges, themes, and desktop/mobile layout. After layout or interaction changes, retain screenshots and inspect for overlap, garbling, overflow, and obvious asymmetry.
+### Project management
 
-### Choosing optional features
+Keep unfinished work, status, and acceptance in `CURRENT_TASKS`. Record completed outcomes and handoff paths in `WORK_PROGRESS`. Goal, constraint, and current-version documents retain stable conclusions; run counts, temporary measurements, and execution snapshots belong in dated logs or registries.
 
-- Enable `process-flow` when ordered stages, timing, validation gates, or recovery points form a durable contract.
-- Enable the `research` module and `experiment-log` when experiments need a record separate from implementation work.
-- Enable `artifact-registry` when retained outputs need stable identity, provenance, hashes, replacements, or validity boundaries.
-- Keep the compact core for small projects or projects whose shape is still unconfirmed.
+Give each task a stable identifier, objective, completion boundary, blockers, and handoff location. Confirmed durable conversation changes update the English source and Chinese mirror together. Explanations, hypotheticals, and unaccepted ideas do not mutate project records.
 
-### Use it
+### Version management
+
+When a version, method, data contract, or primary deliverable changes, record the new identity, effective boundary, and acceptance criteria, then state the remaining permitted uses of the prior version. Inventory affected code, configuration, interfaces, tests, artifacts, and recovery entries.
+
+Historical material remains unchanged and receives lifecycle and evidence-authority classifications. It may remain useful as reference after losing current decision authority. When old active detail would mislead daily work, move a copy into a fingerprinted archive package with restoration notes.
+
+### Testing
+
+Match test scope to change risk. Local behavior changes need unit and regression tests. Changes across components, interfaces, data flow, or generated artifacts need integration tests. Release changes also need final-deliverable and recovery-path checks.
+
+For every material change, record the test target, coverage boundary, retained evidence, and known gaps. A failed run retains the command, input identity, and failure stage. If the project lacks a test layer, record the gap instead of claiming a pass.
+
+### Usage
 
 Install:
 
@@ -189,17 +177,11 @@ Use $skill-installer to install https://github.com/amealf/manage-project-context
 New project:
 
 ```text
-Use $manage-project-context to create the management framework for this new project and fill it with the goals, constraints, decisions, and tasks confirmed in the current conversation. The project type is still unknown, so do not add domain modules.
+Use $manage-project-context to create a detailed PRD for this new project. Extract requirements from the available conversation and ask about missing goals, constraints, tools, stages, acceptance criteria, and category choices.
 ```
 
 Existing project:
 
 ```text
-Use $manage-project-context to read the available conversation and project files, add a project-management folder without replacing existing content, and keep later confirmed changes synchronized with the relevant documents.
-```
-
-Project with optional features:
-
-```text
-Use $manage-project-context to create bilingual project memory for this research project, include the research module, process-flow, experiment-log, and artifact-registry, and preserve existing files.
+Use $manage-project-context to inspect the available conversation and project files, build or update the detailed PRD without replacing existing content, and finish by reporting the deliverables, references, and management records saved.
 ```

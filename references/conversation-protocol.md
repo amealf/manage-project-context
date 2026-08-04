@@ -4,9 +4,11 @@
 
 1. Available conversation boundary
 2. Structured intake
-3. Evidence reconciliation
-4. New and existing project behavior
-5. Chat-driven maintenance
+3. Creator questions
+4. Evidence reconciliation
+5. New and existing project behavior
+6. Chat-driven maintenance
+7. Completion report
 
 ## Available conversation boundary
 
@@ -24,16 +26,25 @@ Before initialization or project-changing work, form a compact internal intake l
 | --- | --- |
 | Goal | Durable objective, current milestone, success criteria, non-goals |
 | Constraints | Confirmed boundaries, required quality, prohibited actions |
+| Tools | Required tools, platforms, formats, sources, integrations, and skills |
+| Delivery path | Intended approach, milestones, stages, dependencies, and validation gates |
 | Decisions | Accepted, retired, or reversed durable choices and rationale |
 | Tasks | Active work, status, acceptance, blockers, handoff state |
 | Work progress | Completed or materially changed work, outcome, evidence, limits, and handoff paths |
 | Change reasons | Material behavior changes whose prior behavior and evidence impact must remain auditable |
 | Current state | Confirmed deliverables, behavior, authoritative paths, known gaps |
 | Artifacts | Stable identity, provenance, lifecycle, evidence authority, replacement, and validity boundary when material |
-| Domains | Only user-confirmed or strongly evidenced optional domains |
+| Domains | Creator-confirmed optional domains; project evidence may identify candidates |
+| Features | Creator-confirmed process flow, experiment log, or artifact registry when justified |
 | Unknowns | Missing, conflicting, or tentative claims that need confirmation |
 
 For each material item, distinguish lifecycle (`active`, `proposed`, `historical`, `retired`, or `unconfirmed`) from evidence authority (`authoritative`, `descriptive`, `selection-only`, `reference-only`, or `invalid-for-decisions`). Retain the conclusion and useful rationale, not conversational wording.
+
+## Creator questions
+
+Read [prd-intake-and-handoff.md](prd-intake-and-handoff.md) before initialization. Ask for missing facts that could change the structure or outcome, no more than three short questions at a time. Cover the intended result and acceptance boundary, constraints and required tools, current state and delivery path, then confirm applicable predefined categories.
+
+Do not ask for facts already present in the conversation or established by project evidence. Let the creator answer “unknown” or defer a category when the gap does not block safe work. Do not enable a domain or optional feature only because it may become useful later.
 
 ## Evidence reconciliation
 
@@ -64,3 +75,7 @@ Before finishing a project-changing task, classify every accepted durable chat c
 For an authority transition, follow [state-transition-protocol.md](state-transition-protocol.md): identify the new current identity, reclassify affected evidence, archive misleading active detail, and leave replacement and restoration pointers.
 
 Do not modify project files for explanation-only questions, brainstorming, hypotheticals, or unaccepted suggestions. If a new idea should be retained but is not active, record it as proposed or future only when the user asks to retain it or clearly establishes it as a project candidate.
+
+## Completion report
+
+After a project-changing task is complete, report the saved state in five bullets or fewer. Include only applicable items: usable deliverables, retained references or evidence, updated management records, lifecycle or authority changes, and the next handoff or closed boundary. Omit intermediate commands and empty categories.
