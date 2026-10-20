@@ -52,12 +52,12 @@ Explain only the categories relevant to the available context. Do not enable a c
 
 ## Completion report
 
-After every completed project-changing task, give the creator a compact saved-state report. Include only nonempty items and keep the report to five bullets or fewer:
+Before modifying project code, behavior, or deliverables, present a concise pre-change plan listing the exact files, functions, or sections to change and the adjacent features that will remain untouched, then wait for confirmation unless already approved. After completing the edits and running necessary tests proportional to the change risk, give the creator a compact saved-state report. Include only nonempty items and keep the report to five bullets or fewer:
 
-- <strong>Deliverables:</strong> correct outputs created or changed, with their paths or identities.
-- <strong>References:</strong> project sources, evidence, or artifacts retained for later use.
+- <strong>Deliverables:</strong> correct outputs created or changed, with their paths, identities, and the exact parts modified (reconciled against the pre-change plan).
+- <strong>References:</strong> test verification results, project sources, evidence, or artifacts retained for later use.
 - <strong>Records:</strong> goals, constraints, tasks, versions, decisions, progress, or registries updated.
 - <strong>Status:</strong> lifecycle, authority, replacement, archive, or unresolved-conflict changes.
-- <strong>Handoff:</strong> next action, review point, blocker, or explicitly closed boundary.
+- <strong>Handoff:</strong> next action, review point, blocker, closed boundary, or timely modularization suggestions when tight coupling risks collateral edits.
 
-Do not list every command or intermediate edit. State what is now saved and usable, what remains unconfirmed, and where the next task should continue.
+Do not list every command or intermediate edit. State what is now saved and usable, what was actually modified, what remains unconfirmed, and where the next task should continue.

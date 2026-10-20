@@ -29,7 +29,7 @@ Describe the shortest useful end-to-end path from inputs or user actions to outp
 
 ## Interfaces and boundaries
 
-Document current APIs, commands, file contracts, queues, events, extension points, or process boundaries only when they exist. State ownership and validity limits instead of inferring a frontend, backend, data system, or deployment model.
+Document current APIs, commands, file contracts, queues, events, extension points, or process boundaries only when they exist. State ownership and validity limits instead of inferring a frontend, backend, data system, or deployment model. When multiple independent features share tightly coupled files or state, note the boundary and practical modularization opportunities so future changes can modify one feature without disturbing adjacent logic.
 
 ## Architecture change log
 

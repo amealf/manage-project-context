@@ -46,19 +46,21 @@ Paths in this section are relative to `{{MANAGEMENT_DIR}}`.
 ## Working rules
 
 - Answer questions without changing files unless the user requests a change.
+- Before modifying project code, behavior, or deliverables, present a concise change plan naming the exact files, functions, or sections to change and the adjacent features that will remain untouched; wait for user confirmation unless the current instruction already approves that specific plan.
 - Treat the project's current real files, behavior, and produced artifacts as execution evidence. Use management documents to explain intent, status, and validity boundaries.
 - Keep unknown facts marked as unconfirmed. Do not turn a proposal, future direction, or archived item into current truth.
 - Classify material records and artifacts by both lifecycle and evidence authority. Existence alone does not grant current decision authority.
-- Preserve existing project files. Review `*.project-management.proposed*` siblings before any merge.
+- Preserve existing project files and unrelated features. Review `*.project-management.proposed*` siblings before any merge.
 - Keep English and Chinese management documents aligned when either changes.
 - Use HTML `<strong>...</strong>` for bold text in managed Markdown. Do not use Markdown `**...**`; inline code, fenced code, and glob paths keep their literal asterisks.
 
 ## After changes
 
+- Run necessary tests proportional to the change risk (unit, regression, integration, or baseline consistency) and record the test target, coverage boundary, retained evidence, and any unverified gaps.
 - Classify accepted conversation changes with the maintenance-trigger table in `00_START_HERE.en.md`.
 - Update the document named by `00_START_HERE.en.md` for the change type.
-- Update `WORK_PROGRESS` after completed or materially changed work, and `CHANGE_REASONS` when a behavior change needs durable rationale.
+- Update `WORK_PROGRESS` after completed or materially changed work (recording the exact modified parts), and `CHANGE_REASONS` when a behavior change needs durable rationale.
 - When active authority changes, preserve superseded detail in a recoverable archive package, state evidence impact, and leave replacement and restoration pointers.
 - Run `node "{{MANAGEMENT_DIR}}\tools\build_dashboard.mjs"` after changing managed Markdown or the manifest.
 - Verify the generated dashboard when a change affects its layout or interaction.
-- Close completed project-changing work with a compact report of usable deliverables, retained references, updated records, status changes, and the next handoff. Omit empty categories and intermediate commands; use five bullets or fewer.
+- Close completed project-changing work with a compact report of usable deliverables and exact modified parts (reconciled against the pre-change plan), test verification and retained references, updated records, status changes, the next handoff, and—when tight coupling makes isolated changes risky—concise suggestions for better modularization. Omit empty categories and intermediate commands; use five bullets or fewer.
