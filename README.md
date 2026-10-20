@@ -6,7 +6,7 @@
 
 ### 简介
 
-`manage-project-context` 用来为项目建立并维护一份双语项目日志与产品需求文档（Product Requirements Document，PRD）。它会把聊天中确认的目标、限制条件、当前版本、代码结构、待办任务、工作进展和决定整理成长期记录。英文版供 Agent 读取执行，中文版方便你直接查看，同时自带一个离线网页（Dashboard）用来搜索和浏览全部记录。
+`manage-project-context` 用来为项目建立并维护一份双语项目日志与产品需求文档（Product Requirements Document，PRD）。它会把聊天中确认的目标、限制条件、当前版本、代码结构、待办任务、工作进展和决定整理成长期记录。英文版供 Agent 读取执行，中文版方便直接查看，同时自带一个离线Dashboard用来搜索和浏览全部记录。
 
 ### 使用
 
