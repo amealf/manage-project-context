@@ -182,17 +182,29 @@ async function main() {
   }
   if (!options.sources.length) throw new Error("At least one --source is required.");
   validateDate(options.date);
-  options.reasonEn = normalizeInline(options.reasonEn, "--reason-en");
-  options.reasonZh = normalizeInline(options.reasonZh, "--reason-zh");
-  for (const key of ["activePeriodEn", "activePeriodZh", "replacement", "validityEn", "validityZh", "restoreEn", "restoreZh"]) {
-    options[key] = normalizeInline(options[key], key);
-  }
-
   const projectRoot = path.resolve(options.project);
   if ((await pathType(projectRoot)) !== "directory") throw new Error("--project must be an existing directory.");
   const managementDirectory = validateSafeRelative(options.managementDirectory, "--management-dir");
   const managementRoot = path.resolve(projectRoot, managementDirectory);
   if (!isInside(projectRoot, managementRoot)) throw new Error("Management directory escapes the project root.");
+  let projectChineseMirror = Boolean(options.reasonZh);
+  try {
+    const projectManifest = JSON.parse(await fs.readFile(path.join(managementRoot, "project-management.json"), "utf8"));
+    if (projectManifest.chineseMirror === true || (Array.isArray(projectManifest.documents) && projectManifest.documents.some((doc) => doc?.lang === "zh"))) {
+      projectChineseMirror = true;
+    } else if (projectManifest.chineseMirror === false && !options.reasonZh) {
+      projectChineseMirror = false;
+    }
+  } catch {
+    // Fall back to explicit --reason-zh presence.
+  }
+  options.reasonEn = normalizeInline(options.reasonEn, "--reason-en");
+  if (projectChineseMirror) {
+    options.reasonZh = normalizeInline(options.reasonZh, "--reason-zh");
+  }
+  for (const key of ["activePeriodEn", "activePeriodZh", "replacement", "validityEn", "validityZh", "restoreEn", "restoreZh"]) {
+    options[key] = normalizeInline(options[key], key);
+  }
   const archiveRoot = path.join(managementRoot, "99_archive", options.name);
   if ((await pathType(archiveRoot)) !== "missing") throw new Error(`Archive destination already exists: ${archiveRoot}`);
 
@@ -220,7 +232,8 @@ async function main() {
     generatedBy: "manage-project-context",
     status: "complete",
     archivedAt: options.date,
-    reason: { en: options.reasonEn, zh: options.reasonZh },
+    chineseMirror: projectChineseMirror,
+    reason: projectChineseMirror ? { en: options.reasonEn, zh: options.reasonZh } : { en: options.reasonEn },
     replacement: options.replacement,
     payloadFileCount: inventory.length,
     payloadSizeBytes,
@@ -238,7 +251,9 @@ async function main() {
       await fs.writeFile(destination, item.buffer, { flag: "wx" });
     }
     await fs.writeFile(path.join(archiveRoot, "README.en.md"), archiveReadmeEn(options, sourceLabels), { encoding: "utf8", flag: "wx" });
-    await fs.writeFile(path.join(archiveRoot, "README.zh.md"), archiveReadmeZh(options, sourceLabels), { encoding: "utf8", flag: "wx" });
+    if (projectChineseMirror) {
+      await fs.writeFile(path.join(archiveRoot, "README.zh.md"), archiveReadmeZh(options, sourceLabels), { encoding: "utf8", flag: "wx" });
+    }
     await fs.writeFile(path.join(archiveRoot, "ARCHIVE_MANIFEST.json"), `${JSON.stringify(manifest, null, 2)}\n`, { encoding: "utf8", flag: "wx" });
   }
 

@@ -42,7 +42,7 @@ For each material item, distinguish lifecycle (`active`, `proposed`, `historical
 
 ## Creator questions
 
-Read [prd-intake-and-handoff.md](prd-intake-and-handoff.md) before initialization. Ask for missing facts that could change the structure or outcome, no more than three short questions at a time. Cover the intended result and acceptance boundary, constraints and required tools, current state and delivery path, then confirm applicable predefined categories.
+Read [prd-intake-and-handoff.md](prd-intake-and-handoff.md) before initialization. English output (`AGENTS.md` and `*.en.md`) is always required; Chinese output (`AGENTS.zh.md` and `*.zh.md`) is optional. Upon loading the Skill, ask the user in <strong>English + Chinese</strong> whether they need Chinese output, along with any other missing facts that could change the structure or outcome (no more than three short questions at a time). All questions to the user must be presented in both English and Chinese. Cover whether Chinese output is needed, the intended result and acceptance boundary, constraints and required tools, current state and delivery path, then confirm applicable predefined categories.
 
 Do not ask for facts already present in the conversation or established by project evidence. Let the creator answer “unknown” or defer a category when the gap does not block safe work. Do not enable a domain or optional feature only because it may become useful later.
 

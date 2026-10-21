@@ -16,10 +16,11 @@ The folder goes beyond a conventional one-file PRD by assigning different readin
 
 ## Intake rules
 
-Before initialization, ask about missing facts that could change the structure or the result. Do not repeat facts already supplied by the user or established by inspected evidence.
+English output is mandatory; Chinese output (`AGENTS.zh.md` and `*.zh.md`) is an option. After loading the Skill and before initialization, ask the creator in <strong>English + Chinese</strong> whether they need Chinese output and ask about any missing facts that could change the structure or the result. Do not repeat facts already supplied by the user or established by inspected evidence.
 
-- Ask no more than three short questions in one message. Combine related fields.
-- Start with the goal and acceptance boundary, then cover constraints, required tools, current state, intended stages, and category selection.
+- Write every question to the user in both English and Chinese (English + Chinese).
+- Ask whether the user wants Chinese output provided, alongside any other needed intake questions (at most three short questions in one message, combining related fields).
+- Cover the goal and acceptance boundary, constraints, required tools, current state, intended stages, and category selection when not yet established.
 - Offer the relevant predefined categories in plain language. Let the creator confirm, reject, or defer each one.
 - Accept “unknown” as a valid answer. Mark non-blocking gaps as unconfirmed when the creator wants work to continue.
 - Pause only when a missing answer would materially change the output or make the requested work unsafe.

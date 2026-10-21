@@ -1,11 +1,11 @@
 ---
 name: manage-project-context
-description: Initialize or maintain a project's bilingual PRD and project-management records, including its dashboard and recoverable archives.
+description: Initialize or maintain a project's PRD and project-management records (required English operational docs, optional Chinese review mirrors), including its dashboard and recoverable archives.
 ---
 
 # Manage Project Context
 
-Maintain a portable project memory with English operational documents, Chinese review mirrors, and an offline dashboard. Use the latest explicit user corrections and relevant inspected evidence. Distinguish confirmed facts, proposals, hypotheses, and archived records.
+Maintain a portable project memory with required English operational documents, optional Chinese review mirrors, and an offline dashboard. Upon loading this Skill for initialization or setup, ask the user in <strong>English + Chinese</strong> whether they need Chinese output, along with any other necessary clarifying questions. Use the latest explicit user corrections and relevant inspected evidence. Distinguish confirmed facts, proposals, hypotheses, and archived records.
 
 ## Select the task
 

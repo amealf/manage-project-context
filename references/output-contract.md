@@ -96,8 +96,9 @@ The artifact registry is declared under the manifest's `registries` array and is
 ## Content invariants
 
 - Encode every generated text file as UTF-8 without corrupting Chinese text.
-- Make English the operational source and Chinese the human-review mirror.
-- Keep headings and section intent aligned across each pair. Exact sentence-by-sentence translation is not required when natural wording differs.
+- Make English the required operational source and Chinese an optional human-review mirror (enabled when requested by the user via `--chinese`).
+- When asking the creator intake or clarifying questions, present every question in <strong>English + Chinese</strong>, including whether Chinese output is needed.
+- Keep headings and section intent aligned across each pair when Chinese output is enabled. Exact sentence-by-sentence translation is not required when natural wording differs.
 - Keep root agent files concise and put the detailed reading matrix in `00_START_HERE`.
 - Make root agent files identify when each core or selected module document must be read.
 - Mark unknown facts as unconfirmed. Do not invent architecture, technology, paths, owners, requirements, or results.

@@ -228,7 +228,7 @@ async function validateArtifactRegistries(manifest, managementRoot, projectRoot,
   }
 }
 
-async function validateArchivePackages(managementRoot, errors, warnings) {
+async function validateArchivePackages(managementRoot, hasChinese, errors, warnings) {
   const archiveRoot = path.join(managementRoot, "99_archive");
   if (!(await exists(archiveRoot))) return;
   const manifests = [];
@@ -253,7 +253,8 @@ async function validateArchivePackages(managementRoot, errors, warnings) {
       continue;
     }
     const archiveDirectory = path.dirname(manifestPath);
-    for (const note of ["README.en.md", "README.zh.md"]) {
+    const requiredNotes = hasChinese && manifest.chineseMirror !== false ? ["README.en.md", "README.zh.md"] : ["README.en.md"];
+    for (const note of requiredNotes) {
       if (!(await exists(path.join(archiveDirectory, note)))) errors.push(`Standard archive package is missing ${note}: ${archiveDirectory}`);
     }
     if (!Array.isArray(manifest.files) || !manifest.inventoryFingerprintSha256) {
@@ -291,7 +292,7 @@ async function validateArchivePackages(managementRoot, errors, warnings) {
   }
 }
 
-function checkBilingualPairs(documents, errors) {
+function checkDocumentLanguages(documents, hasChinese, errors) {
   const pairs = new Map();
   for (const document of documents) {
     if (!document || !document.pair || !document.lang || !document.path || !document.id) {
@@ -302,7 +303,9 @@ function checkBilingualPairs(documents, errors) {
     pairs.get(document.pair).add(document.lang);
   }
   for (const [pair, languages] of pairs) {
-    if (!languages.has("en") || !languages.has("zh")) errors.push(`Manifest pair ${pair} is not bilingual.`);
+    if (!languages.has("en")) errors.push(`Manifest pair ${pair} is missing required English document.`);
+    if (hasChinese && !languages.has("zh")) errors.push(`Manifest pair ${pair} is not bilingual.`);
+    if (!hasChinese && languages.has("zh")) errors.push(`Manifest pair ${pair} includes Chinese while Chinese output is disabled.`);
   }
 }
 
@@ -314,10 +317,28 @@ async function main() {
   const errors = [];
   const warnings = [];
 
-  for (const relative of ["AGENTS.md", "AGENTS.zh.md"]) {
+  const manifestPath = path.join(managementRoot, "project-management.json");
+  let manifest = null;
+  if (!(await exists(manifestPath))) {
+    errors.push("Missing project-management.json.");
+  } else {
+    try {
+      manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+    } catch (error) {
+      errors.push(`Manifest is invalid JSON: ${error.message}`);
+    }
+  }
+
+  const hasChinese = manifest
+    ? (manifest.chineseMirror !== false && (manifest.chineseMirror === true || (Array.isArray(manifest.documents) && manifest.documents.some((doc) => doc?.lang === "zh"))))
+    : true;
+
+  const requiredRootFiles = hasChinese ? ["AGENTS.md", "AGENTS.zh.md"] : ["AGENTS.md"];
+  for (const relative of requiredRootFiles) {
     if (!(await exists(path.join(projectRoot, relative)))) errors.push(`Missing ${relative}.`);
   }
-  for (const relative of coreRelativePaths) {
+  const activeCoreRelativePaths = coreRelativePaths.filter((relative) => hasChinese || !relative.endsWith(".zh.md"));
+  for (const relative of activeCoreRelativePaths) {
     if (!(await exists(path.join(managementRoot, ...relative.split("/"))))) errors.push(`Missing ${relative}.`);
   }
 
@@ -328,13 +349,15 @@ async function main() {
     errors,
     warnings,
   );
-  await validateProtocolFile(
-    path.join(projectRoot, "AGENTS.zh.md"),
-    "## 聊天驱动的项目记忆",
-    "AGENTS.zh.md",
-    errors,
-    warnings,
-  );
+  if (hasChinese) {
+    await validateProtocolFile(
+      path.join(projectRoot, "AGENTS.zh.md"),
+      "## 聊天驱动的项目记忆",
+      "AGENTS.zh.md",
+      errors,
+      warnings,
+    );
+  }
   await validateProtocolFile(
     path.join(managementRoot, "00_START_HERE.en.md"),
     "## PRD intake",
@@ -342,13 +365,15 @@ async function main() {
     errors,
     warnings,
   );
-  await validateProtocolFile(
-    path.join(managementRoot, "00_START_HERE.zh.md"),
-    "## PRD 问询",
-    "00_START_HERE.zh.md",
-    errors,
-    warnings,
-  );
+  if (hasChinese) {
+    await validateProtocolFile(
+      path.join(managementRoot, "00_START_HERE.zh.md"),
+      "## PRD 问询",
+      "00_START_HERE.zh.md",
+      errors,
+      warnings,
+    );
+  }
   await validateProtocolFile(
     path.join(managementRoot, "00_START_HERE.en.md"),
     "## Completion report",
@@ -356,34 +381,32 @@ async function main() {
     errors,
     warnings,
   );
-  await validateProtocolFile(
-    path.join(managementRoot, "00_START_HERE.zh.md"),
-    "## 完成回报",
-    "00_START_HERE.zh.md",
-    errors,
-    warnings,
-  );
+  if (hasChinese) {
+    await validateProtocolFile(
+      path.join(managementRoot, "00_START_HERE.zh.md"),
+      "## 完成回报",
+      "00_START_HERE.zh.md",
+      errors,
+      warnings,
+    );
+  }
 
-  const manifestPath = path.join(managementRoot, "project-management.json");
-  let manifest = null;
-  if (!(await exists(manifestPath))) {
-    errors.push("Missing project-management.json.");
-  } else {
-    try {
-      manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
-      if (manifest.generatedBy !== "manage-project-context") errors.push("Manifest ownership marker is missing.");
-      if (!Number.isInteger(manifest.schemaVersion) || manifest.schemaVersion < 2) errors.push("Manifest schemaVersion must be at least 2.");
-      if (manifest.defaultLanguage !== "zh") errors.push("Dashboard default language must be zh.");
-      for (const group of ["priority", "planning", "state", "work", "domain", "evidence", "reference", "archive"]) {
-        if (!manifest.groups?.[group]?.en || !manifest.groups?.[group]?.zh) {
-          errors.push(`Manifest group ${group} requires English and Chinese labels.`);
-        }
-      }
-      if (!Array.isArray(manifest.documents)) errors.push("Manifest documents must be an array.");
-      else checkBilingualPairs(manifest.documents, errors);
-    } catch (error) {
-      errors.push(`Manifest is invalid JSON: ${error.message}`);
+  if (manifest) {
+    if (manifest.generatedBy !== "manage-project-context") errors.push("Manifest ownership marker is missing.");
+    if (!Number.isInteger(manifest.schemaVersion) || manifest.schemaVersion < 2) errors.push("Manifest schemaVersion must be at least 2.");
+    if (hasChinese && manifest.defaultLanguage !== "zh" && manifest.defaultLanguage !== "en") {
+      errors.push("Dashboard default language must be zh or en.");
     }
+    if (!hasChinese && manifest.defaultLanguage !== "en") {
+      errors.push("English-only dashboard default language must be en.");
+    }
+    for (const group of ["priority", "planning", "state", "work", "domain", "evidence", "reference", "archive"]) {
+      if (!manifest.groups?.[group]?.en || !manifest.groups?.[group]?.zh) {
+        errors.push(`Manifest group ${group} requires English and Chinese labels.`);
+      }
+    }
+    if (!Array.isArray(manifest.documents)) errors.push("Manifest documents must be an array.");
+    else checkDocumentLanguages(manifest.documents, hasChinese, errors);
   }
 
   if (manifest?.documents) {
@@ -424,7 +447,7 @@ async function main() {
     if (agentEnglish?.group !== "priority" || path.resolve(managementRoot, ...(agentEnglish?.path || "").split("/")) !== path.join(projectRoot, "AGENTS.md")) {
       errors.push("AGENTS.md must resolve to the project root and appear in the priority group.");
     }
-    if (agentChinese?.group !== "priority" || path.resolve(managementRoot, ...(agentChinese?.path || "").split("/")) !== path.join(projectRoot, "AGENTS.zh.md")) {
+    if (hasChinese && (agentChinese?.group !== "priority" || path.resolve(managementRoot, ...(agentChinese?.path || "").split("/")) !== path.join(projectRoot, "AGENTS.zh.md"))) {
       errors.push("AGENTS.zh.md must resolve to the project root and appear in the priority group.");
     }
     const expectedGroups = new Map([
@@ -475,7 +498,7 @@ async function main() {
   }
 
   if (manifest) await validateArtifactRegistries(manifest, managementRoot, projectRoot, errors);
-  await validateArchivePackages(managementRoot, errors, warnings);
+  await validateArchivePackages(managementRoot, hasChinese, errors, warnings);
 
   if (await exists(managementRoot)) {
     for (const file of await collectTextFiles(managementRoot)) {
@@ -491,7 +514,6 @@ async function main() {
     const requiredFragments = [
       "<!-- generated-by: manage-project-context -->",
       'lang="zh-CN"',
-      'language: "zh"',
       'id="search"',
       'id="document-navigation"',
       'id="outline-list"',
@@ -506,6 +528,9 @@ async function main() {
     ];
     for (const fragment of requiredFragments) {
       if (!dashboard.includes(fragment)) errors.push(`Dashboard is missing required fragment: ${fragment}`);
+    }
+    if (!dashboard.includes('language: "zh"') && !dashboard.includes("language: HAS_ZH")) {
+      errors.push("Dashboard is missing required language initialization.");
     }
   }
 

@@ -7,7 +7,7 @@ Apply established changes directly within the user's current or earlier authoriz
 - At the start of project-changing work, compare the latest available conversation with the root rules, entry document, and task-selected management files. The latest explicit user correction overrides older conversation summaries.
 - Before modifying project code, behavior, or deliverables, present a concise change plan listing the exact files, functions, or sections to change and the adjacent features that will remain untouched; wait for user confirmation unless the current instruction already approves that specific plan.
 - Treat an accepted durable change established during project work as a documentation-maintenance trigger even when the user does not repeat "update the project-management folder." Questions, hypotheticals, and unaccepted ideas do not mutate files.
-- Treat English `*.en.md` files as the operational source and Chinese `*.zh.md` files as review mirrors.
+- Treat English `*.en.md` files as the required operational source and Chinese `*.zh.md` files as optional review mirrors (maintained when enabled for the project). When asking the user clarifying questions, present the questions in <strong>English + Chinese</strong>.
 - Treat lifecycle and evidence authority as separate axes. A retained item may remain useful while losing current decision authority.
 - Keep root `AGENTS.md` concise. Store detailed reading maps and maintenance policy under `project_management`.
 - Read only the documents selected by the task matrix in `00_START_HERE.en.md`, in addition to the mandatory root rules and entry document.

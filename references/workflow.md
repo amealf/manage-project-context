@@ -29,9 +29,9 @@ Use the latest explicit user correction. Do not copy the transcript into the pro
 
 ## PRD clarification
 
-Read [prd-intake-and-handoff.md](prd-intake-and-handoff.md). Treat the folder as a detailed, living PRD and ask the creator concise questions for missing requirements that could alter the output. Ask no more than three questions in one message and avoid repeating supplied facts.
+Read [prd-intake-and-handoff.md](prd-intake-and-handoff.md). Treat the folder as a detailed, living PRD. English output is required; Chinese output (`*.zh.md` and `AGENTS.zh.md`) is optional. Upon loading the Skill, ask the creator concise questions in <strong>English + Chinese</strong>: ask whether they need Chinese output, and ask for any missing requirements that could alter the output (no more than three short questions in one message, without repeating supplied facts).
 
-Confirm the outcome and acceptance boundary, constraints and required tools, current state and intended stages. Then ask which predefined domains and optional features apply. Allow unknown or deferred answers when they do not block safe progress.
+Confirm whether Chinese output is wanted, the outcome and acceptance boundary, constraints and required tools, current state and intended stages, and which predefined domains and optional features apply. Allow unknown or deferred answers when they do not block safe progress.
 
 ## Inspection and mode selection
 

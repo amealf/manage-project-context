@@ -97,6 +97,7 @@ Options:
   --project-name <name>
   --goal-en <text>
   --goal-zh <text>
+  --chinese | --no-chinese
   --date YYYY-MM-DD
   --management-dir <relative-path>
   --include <module[,module]>
@@ -112,6 +113,8 @@ function parseArguments(values) {
     projectName: "",
     goalEn: "Confirm the durable project goal with the user.",
     goalZh: "请与用户确认长期项目目标。",
+    goalZhProvided: false,
+    chinese: null,
     date: new Date().toISOString().slice(0, 10),
     managementDirectory: "project_management",
     modules: [],
@@ -140,6 +143,14 @@ function parseArguments(values) {
       options.dryRun = true;
       continue;
     }
+    if (token === "--chinese" || token === "--include-chinese") {
+      options.chinese = true;
+      continue;
+    }
+    if (token === "--no-chinese" || token === "--english-only") {
+      options.chinese = false;
+      continue;
+    }
     if (token === "--include") {
       const value = values[index + 1];
       if (!value || value.startsWith("--")) throw new Error("--include requires a module name.");
@@ -159,6 +170,7 @@ function parseArguments(values) {
     const value = values[index + 1];
     if (value === undefined || value.startsWith("--")) throw new Error(`${token} requires a value.`);
     options[key] = value;
+    if (token === "--goal-zh") options.goalZhProvided = true;
     index += 1;
   }
 
@@ -402,10 +414,11 @@ async function createWriter(report, dryRun) {
   };
 }
 
-async function materializeTemplates(templateBase, projectRoot, managementDirectory, replacements, writeProtected) {
+async function materializeTemplates(templateBase, projectRoot, managementDirectory, replacements, writeProtected, includeChinese = true) {
   const results = [];
   for (const source of await walkFiles(templateBase)) {
     const target = destinationForTemplate(source, templateBase, projectRoot, managementDirectory);
+    if (!includeChinese && /\.zh\.md$/i.test(target)) continue;
     const content = source.endsWith(".tmpl")
       ? renderTemplate(await fs.readFile(source, "utf8"), replacements, source)
       : await fs.readFile(source);
@@ -460,6 +473,9 @@ async function writeManifest(target, desired, report, dryRun, writeProtected) {
       const currentText = await fs.readFile(target, "utf8");
       const current = JSON.parse(currentText);
       if (current.generatedBy === "manage-project-context") {
+        const mergedDocuments = mergeDocumentEntries(current.documents, desired.documents)
+          .filter((document) => desired.chineseMirror !== false || document?.lang !== "zh");
+        const hasZh = mergedDocuments.some((document) => document?.lang === "zh");
         const merged = {
           ...desired,
           ...current,
@@ -467,9 +483,10 @@ async function writeManifest(target, desired, report, dryRun, writeProtected) {
           generatedBy: "manage-project-context",
           projectName: current.projectName || desired.projectName,
           managementDirectory: current.managementDirectory || desired.managementDirectory,
-          defaultLanguage: current.defaultLanguage === "en" ? "en" : "zh",
+          chineseMirror: hasZh,
+          defaultLanguage: hasZh ? (current.defaultLanguage === "en" ? "en" : "zh") : "en",
           groups: { ...desired.groups, ...(current.groups || {}) },
-          documents: mergeDocumentEntries(current.documents, desired.documents),
+          documents: mergedDocuments,
           registries: mergeRegistryEntries(current.registries, desired.registries || []),
         };
         const nextText = `${JSON.stringify(merged, null, 2)}\n`;
@@ -534,6 +551,18 @@ async function main() {
 
   const inventory = await collectInventory(options.project, options.managementDirectory);
   const managementRoot = path.join(options.project, options.managementDirectory);
+  let includeChinese = options.chinese;
+  if (includeChinese === null) {
+    if (options.goalZhProvided) {
+      includeChinese = true;
+    } else if (options.mode === "existing") {
+      const existingZhAgent = (await getPathType(path.join(options.project, "AGENTS.zh.md"))) === "file";
+      const existingZhStart = (await getPathType(path.join(managementRoot, "00_START_HERE.zh.md"))) === "file";
+      includeChinese = existingZhAgent || existingZhStart;
+    } else {
+      includeChinese = false;
+    }
+  }
   const projectRootFromManagement = path.relative(managementRoot, options.project) || ".";
   const projectRootFromState = path.relative(path.join(managementRoot, "02_current_state"), options.project) || ".";
   const moduleSummaryEn = options.modules.length ? options.modules.join(", ") : "None selected; add a module only when its domain becomes part of the project.";
@@ -567,6 +596,7 @@ async function main() {
     ok: true,
     dryRun: options.dryRun,
     mode: options.mode,
+    chinese: includeChinese,
     project: options.project,
     managementDirectory: managementRoot,
     modules: options.modules,
@@ -589,6 +619,7 @@ async function main() {
     options.managementDirectory,
     replacements,
     writeProtected,
+    includeChinese,
   );
   const portableArchiverSource = path.join(skillDirectory, "scripts", "archive_project_management.mjs");
   const portableArchiverTarget = path.join(managementRoot, "tools", "archive_project_management.mjs");
@@ -608,6 +639,7 @@ async function main() {
       options.managementDirectory,
       replacements,
       writeProtected,
+      includeChinese,
     ));
   }
 
@@ -622,14 +654,17 @@ async function main() {
       options.managementDirectory,
       replacements,
       writeProtected,
+      includeChinese,
     ));
   }
 
-  for (let index = 0; index < documentEntries.length; index += 1) {
-    documentEntries[index] = enrichDocumentMetadata(documentEntries[index]);
+  const activeDocumentEntries = documentEntries.filter((document) => includeChinese || document.lang !== "zh");
+
+  for (let index = 0; index < activeDocumentEntries.length; index += 1) {
+    activeDocumentEntries[index] = enrichDocumentMetadata(activeDocumentEntries[index]);
   }
 
-  for (const document of documentEntries) {
+  for (const document of activeDocumentEntries) {
     if (document.pair === "agent-rules") {
       document.path = path.posix.join(
         projectRootFromManagement.split(path.sep).join("/"),
@@ -644,9 +679,10 @@ async function main() {
     projectName: options.projectName,
     managementDirectory: options.managementDirectory.split(path.sep).join("/"),
     projectRootRelative: projectRootFromManagement.split(path.sep).join("/"),
-    defaultLanguage: "zh",
+    chineseMirror: includeChinese,
+    defaultLanguage: includeChinese ? "zh" : "en",
     groups: baseManifest.groups,
-    documents: documentEntries,
+    documents: activeDocumentEntries,
     registries: registryEntries,
   };
   const manifestPath = path.join(options.project, options.managementDirectory, "project-management.json");

@@ -936,8 +936,9 @@ const html = String.raw`<!doctype html>
       },
     };
 
+    const HAS_ZH = DOCUMENTS.some(function (doc) { return doc.lang === "zh"; });
     const state = {
-      language: "zh",
+      language: HAS_ZH && MANIFEST.defaultLanguage !== "en" ? "zh" : "en",
       pair: "agent-rules",
       query: "",
       theme: document.documentElement.dataset.theme === "light" ? "light" : "dark",
@@ -1159,6 +1160,7 @@ const html = String.raw`<!doctype html>
         button.querySelector(".sr-only").textContent = copy.themeToggle;
         button.querySelector(".theme-icon").textContent = state.theme === "dark" ? "◐" : "◑";
       });
+      languageToggle.hidden = !HAS_ZH;
       languageToggle.setAttribute("aria-label", copy.languageToggle);
       languageToggle.setAttribute("title", copy.languageToggle);
       languageToggle.querySelector(".sr-only").textContent = copy.languageToggle;

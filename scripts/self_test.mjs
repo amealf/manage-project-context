@@ -254,12 +254,25 @@ async function main() {
     throw new Error("Experiment log did not enforce the research-module requirement.");
   }
 
+  const englishOnlyProject = path.join(options.outputRoot, "english-only-project");
+  const englishOnlyInit = parseJsonOutput(await run(initializer, [
+    "--project", englishOnlyProject,
+    "--mode", "new",
+    "--project-name", "English Only Notes",
+    "--goal-en", "Maintain an English-only project context.",
+    "--no-chinese",
+    "--date", options.date,
+  ]), "english-only initialization");
+  if (englishOnlyInit.chinese !== false) throw new Error("English-only initialization unexpectedly enabled Chinese output.");
+  const englishOnlyValidation = parseJsonOutput(await run(validator, ["--project", englishOnlyProject]), "english-only validation");
+
   console.log(JSON.stringify({
-    ok: newValidation.ok && existingValidation.ok && migratedValidation.ok && featureValidation.ok && archivedValidation.ok,
+    ok: newValidation.ok && existingValidation.ok && migratedValidation.ok && featureValidation.ok && archivedValidation.ok && englishOnlyValidation.ok,
     outputRoot: options.outputRoot,
     newProject: { initialization: newInit, validation: newValidation },
     existingProject: { initialization: existingInit, validation: existingValidation, migration: migrationInit, migratedValidation },
     featureProject: { initialization: featureInit, validation: featureValidation, archive: archiveResult, archivedValidation },
+    englishOnlyProject: { initialization: englishOnlyInit, validation: englishOnlyValidation },
   }, null, 2));
 }
 
